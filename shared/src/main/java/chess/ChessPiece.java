@@ -29,7 +29,7 @@ public class ChessPiece {
             return false;
         }
         ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type;
+        return this.pieceColor.equals(that.pieceColor) && this.type.equals(that.type);
     }
 
     @Override
@@ -85,10 +85,15 @@ public class ChessPiece {
                 if(i == 0 && j == 0) {
                     continue;
                 }
-                if(row + i < 0 || row + i > 7) {
+                if(row + i < 1 || row + i > 8) {
                     continue;
                 }
-                if(col + j < 0 || col + j > 7) {
+                if(col + j < 1 || col + j > 8) {
+                    continue;
+                }
+                if(board.board[row + i][col + j] == null){
+                    ChessPosition endPosition = new ChessPosition(row + i, col + j);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
                     continue;
                 }
                 if(board.board[row + i][col + j].pieceColor == pieceColor) {
