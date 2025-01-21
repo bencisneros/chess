@@ -78,6 +78,9 @@ public class ChessPiece {
         else if(type == PieceType.PAWN){
             moves = pawnMoves(board, myPosition);
         }
+        else if(type == PieceType.BISHOP){
+            moves = bishopMoves(board, myPosition);
+        }
         return moves;
     }
 
@@ -220,6 +223,70 @@ public class ChessPiece {
                 moves.add(new ChessMove(myPosition, endPosition, null));
                 }
         }
+        return moves;
+    }
+
+    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
+        int row = myPosition.row;
+        int col = myPosition.col;
+        List<ChessMove> moves = new ArrayList<>();
+
+        for(int i = 1; i + row < 9 && col + i < 9; i ++){
+            if(board.board[row + i][col + i] == null){
+                ChessPosition endPosition = new ChessPosition(row + i, col + i);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+            }
+            else{
+                if(board.board[row + i][col + i].pieceColor != this.pieceColor) {
+                    ChessPosition endPosition = new ChessPosition(row + i, col + i);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+                break;
+            }
+        }
+
+        for(int i = 1; row - i > 0 && col - i > 0; i ++){
+            if(board.board[row - i][col - i] == null){
+                ChessPosition endPosition = new ChessPosition(row - i, col - i);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+            }
+            else{
+                if(board.board[row - i][col - i].pieceColor != this.pieceColor) {
+                    ChessPosition endPosition = new ChessPosition(row - i, col - i);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+                break;
+            }
+        }
+
+        for(int i = 1; i + row < 9 && col - i > 0; i ++){
+            if(board.board[row + i][col - i] == null){
+                ChessPosition endPosition = new ChessPosition(row + i, col - i);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+            }
+            else{
+                if(board.board[row + i][col - i].pieceColor != this.pieceColor) {
+                    ChessPosition endPosition = new ChessPosition(row + i, col - i);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+                break;
+            }
+        }
+
+        for(int i = 1; row - i > 0 && col + i < 9; i ++){
+            if(board.board[row - i][col + i] == null){
+                ChessPosition endPosition = new ChessPosition(row - i, col + i);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+            }
+            else{
+                if(board.board[row - i][col + i].pieceColor != this.pieceColor) {
+                    ChessPosition endPosition = new ChessPosition(row - i, col + i);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+                break;
+            }
+        }
+
         return moves;
     }
 }
