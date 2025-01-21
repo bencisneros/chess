@@ -84,6 +84,14 @@ public class ChessPiece {
         else if(type == PieceType.ROOK){
             moves = rookMoves(board, myPosition);
         }
+        else if(type == PieceType.QUEEN){
+            Collection<ChessMove> rookMoves = new ArrayList<>();
+            Collection<ChessMove> bishopMoves = new ArrayList<>();
+            rookMoves = rookMoves(board, myPosition);
+            bishopMoves = bishopMoves(board, myPosition);
+            moves.addAll(rookMoves);
+            moves.addAll(bishopMoves);
+        }
         return moves;
     }
 
