@@ -71,32 +71,39 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return kingMoves(board, myPosition);
+        Collection<ChessMove> moves = new ArrayList<>();
+        if(type == PieceType.KING){
+            moves = kingMoves(board, myPosition);
+        }
+        else if(type == PieceType.PAWN){
+            moves = pawnMoves(board, myPosition);
+        }
+        return moves;
     }
 
 
-    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition){
+    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.row;
         int col = myPosition.col;
         List<ChessMove> moves = new ArrayList<>();
 
-        for(int i = -1; i < 2; i++){
-            for(int j = -1; j < 2; j++){
-                if(i == 0 && j == 0) {
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (i == 0 && j == 0) {
                     continue;
                 }
-                if(row + i < 1 || row + i > 8) {
+                if (row + i < 1 || row + i > 8) {
                     continue;
                 }
-                if(col + j < 1 || col + j > 8) {
+                if (col + j < 1 || col + j > 8) {
                     continue;
                 }
-                if(board.board[row + i][col + j] == null){
+                if (board.board[row + i][col + j] == null) {
                     ChessPosition endPosition = new ChessPosition(row + i, col + j);
                     moves.add(new ChessMove(myPosition, endPosition, null));
                     continue;
                 }
-                if(board.board[row + i][col + j].pieceColor == pieceColor) {
+                if (board.board[row + i][col + j].pieceColor == pieceColor) {
                     continue;
                 }
                 ChessPosition endPosition = new ChessPosition(row + i, col + j);
@@ -104,6 +111,115 @@ public class ChessPiece {
             }
         }
 
+        return moves;
+    }
+
+    public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        int row = myPosition.row;
+        int col = myPosition.col;
+        List<ChessMove> moves = new ArrayList<>();
+
+        if (this.pieceColor == ChessGame.TeamColor.WHITE) {
+            if (board.board[row + 1][col] == null && row + 1 < 9) {
+                if(row + 1 == 8){
+                    ChessPosition endPosition = new ChessPosition(row + 1, col);
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                }
+                else {
+                    ChessPosition endPosition = new ChessPosition(row + 1, col);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+            }
+            if(board.board[row + 1][col + 1] != null){
+                if (board.board[row + 1][col + 1].pieceColor == ChessGame.TeamColor.BLACK) {
+                    if(row == 7) {
+                        ChessPosition endPosition = new ChessPosition(row + 1, col + 1);
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    }
+                    else {
+                        ChessPosition endPosition = new ChessPosition(row + 1, col + 1);
+                        moves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                }
+            }
+            if (board.board[row + 1][col - 1] != null){
+                if (board.board[row + 1][col - 1].pieceColor == ChessGame.TeamColor.BLACK) {
+                    if(row == 7) {
+                        ChessPosition endPosition = new ChessPosition(row + 1, col - 1);
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    }
+                    else {
+                        ChessPosition endPosition = new ChessPosition(row + 1, col - 1);
+                        moves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                }
+
+            }
+            if(row == 2 && board.board[row + 1][col] == null && board.board[row + 2][col] == null){
+                ChessPosition endPosition = new ChessPosition(row + 2, col);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+            }
+        }
+
+
+        if (this.pieceColor == ChessGame.TeamColor.BLACK) {
+            if (board.board[row - 1][col] == null && row - 1 > 0) {
+                if(row - 1 == 1){
+                    ChessPosition endPosition = new ChessPosition(row - 1, col);
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                }
+                else {
+                    ChessPosition endPosition = new ChessPosition(row - 1, col);
+                    moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+            }
+            if(board.board[row - 1][col - 1] != null) {
+                if (board.board[row - 1][col - 1].pieceColor == ChessGame.TeamColor.WHITE) {
+                    if(row == 2){
+                        ChessPosition endPosition = new ChessPosition(row - 1, col - 1);
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    }
+                    else {
+                        ChessPosition endPosition = new ChessPosition(row - 1, col - 1);
+                        moves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                }
+            }
+            if(board.board[row - 1][col + 1] != null) {
+                if (board.board[row - 1][col + 1].pieceColor == ChessGame.TeamColor.WHITE) {
+                    if(row == 2){
+                        ChessPosition endPosition = new ChessPosition(row - 1, col + 1);
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    }
+                    else {
+                        ChessPosition endPosition = new ChessPosition(row - 1, col + 1);
+                        moves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                }
+            }
+            if(row == 7 && board.board[row - 1][col] == null && board.board[row - 2][col] == null){
+                ChessPosition endPosition = new ChessPosition(row - 2, col);
+                moves.add(new ChessMove(myPosition, endPosition, null));
+                }
+        }
         return moves;
     }
 }
