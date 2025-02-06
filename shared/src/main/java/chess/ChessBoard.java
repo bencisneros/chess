@@ -17,6 +17,10 @@ public class ChessBoard {
         board = new ChessPiece[10][10];
     }
 
+    public ChessBoard(ChessBoard other){
+        this.board = other.board;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

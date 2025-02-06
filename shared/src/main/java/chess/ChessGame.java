@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -10,21 +11,21 @@ import java.util.Collection;
  */
 public class ChessGame {
     public ChessBoard board;
-    public TeamColor color;
+    public TeamColor team;
 
 
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
-        color = TeamColor.WHITE;
+        team = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return color;
+        return team;
     }
 
     /**
@@ -33,7 +34,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        color = team;
+        this.team = team;
     }
 
     /**
@@ -52,7 +53,34 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        int row = startPosition.row;
+        int col = startPosition.col;
+        ChessPiece piece = board.board[row][col];
+        if(piece == null){
+            return null;
+        }
+        ChessBoard boardCopy = new ChessBoard(board);
+        TeamColor color = piece.getTeamColor();
+
+        var opponentMoves = new ArrayList<ChessMove>();
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPiece tempPiece = board.board[i][j];
+                if(tempPiece == null){
+                    continue;
+                }
+                if(tempPiece.pieceColor != color){
+                    opponentMoves.addAll(tempPiece.pieceMoves(board,startPosition));
+                }
+
+            }
+        }
+
+
+        return piece.pieceMoves(board, startPosition);
+
+
+
     }
 
     /**
@@ -72,7 +100,41 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = null;
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPiece tempPiece = board.board[i][j];
+                if(tempPiece == null){
+                    continue;
+                }
+                if(tempPiece.pieceColor == teamColor && tempPiece.type == ChessPiece.PieceType.KING){
+                    kingPosition = new ChessPosition(i,j);
+                }
+            }
+        }
+
+
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPiece tempPiece = board.board[i][j];
+                if(tempPiece == null){
+                    continue;
+                }
+                if(tempPiece.pieceColor != teamColor){
+                    var opponentMoves = new ArrayList<ChessMove>();
+                    ChessPosition tempPosition = new ChessPosition(i,j);
+                    opponentMoves.addAll(tempPiece.pieceMoves(board,tempPosition));
+                    var chessPositions = new ArrayList<ChessPosition>();
+                    for(ChessMove moves : opponentMoves){
+                        chessPositions.add(moves.endPosition);
+                    }
+                    if(chessPositions.contains(kingPosition)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

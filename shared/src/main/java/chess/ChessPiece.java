@@ -99,7 +99,7 @@ public class ChessPiece {
     }
 
 
-    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.row;
         int col = myPosition.col;
         List<ChessMove> moves = new ArrayList<>();
@@ -131,7 +131,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.row;
         int col = myPosition.col;
         List<ChessMove> moves = new ArrayList<>();
@@ -240,7 +240,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition){
         int row = myPosition.row;
         int col = myPosition.col;
         List<ChessMove> moves = new ArrayList<>();
@@ -304,7 +304,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
         int row = myPosition.row;
         int col = myPosition.col;
         Collection<ChessMove> moves = new ArrayList<>();
@@ -369,7 +369,7 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.row;
         int col = myPosition.col;
         Collection<ChessMove> moves = new ArrayList<>();
