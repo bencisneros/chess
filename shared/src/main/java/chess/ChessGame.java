@@ -155,7 +155,60 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(isInCheck(teamColor)){
+            return false;
+        }
+        var allPieces = new ArrayList<ChessPiece>();
+        ChessPosition kingPosition = null;
+        ChessPiece king = null;
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPiece tempPiece = board.board[i][j];
+                if(tempPiece == null){
+                    continue;
+                }
+                else{
+                    allPieces.add(tempPiece);
+                }
+                if(tempPiece.pieceColor == teamColor && tempPiece.type == ChessPiece.PieceType.KING){
+                    kingPosition = new ChessPosition(i,j);
+                    king = board.board[i][j];
+                }
+            }
+        }
+
+        if(allPieces.size() != 1){
+            return false;
+        }
+
+
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPiece tempPiece = board.board[i][j];
+                if(tempPiece == null){
+                    continue;
+                }
+                if(tempPiece.pieceColor != teamColor){
+                    var opponentMoves = new ArrayList<ChessMove>();
+                    ChessPosition tempPosition = new ChessPosition(i,j);
+                    opponentMoves.addAll(tempPiece.pieceMoves(board,tempPosition));
+                    var chessPositions = new ArrayList<ChessPosition>();
+                    for(ChessMove moves : opponentMoves){
+                        chessPositions.add(moves.endPosition);
+                    }
+                }
+            }
+        }
+
+        var kingMoves = king.pieceMoves(board, kingPosition);
+        for(ChessMove moves : kingMoves){
+            if(!kingMoves.contains(moves)){
+                break;
+            }
+            return true;
+        }
+
+        return false;
     }
 
     /**
