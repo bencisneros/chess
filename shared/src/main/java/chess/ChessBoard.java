@@ -17,8 +17,16 @@ public class ChessBoard {
         board = new ChessPiece[10][10];
     }
 
-    public ChessBoard(ChessBoard other){
-        this.board = other.board;
+    public ChessBoard(ChessBoard other) {
+        this.board = new ChessPiece[10][10]; // Create a new board
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (other.board[i][j] != null) {
+                    this.board[i][j] = new ChessPiece(other.board[i][j].pieceColor, other.board[i][j].type); // Create a new ChessPiece
+                }
+            }
+        }
     }
 
     @Override
