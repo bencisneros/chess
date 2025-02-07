@@ -56,24 +56,14 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         var goodMoves = new ArrayList<ChessMove>();
-        ChessGame.TeamColor teamColor = getTeamTurn();
-        var teamMoves = new ArrayList<ChessMove>();
-        for(int i = 1; i < 9; i++){
-            for(int j = 1; j < 9; j++) {
-                ChessPiece tempPiece = board.board[i][j];
-                if(tempPiece == null){
-                    continue;
-                }
-                else if(tempPiece.pieceColor == teamColor){
-                    teamMoves.addAll(tempPiece.pieceMoves(board, new ChessPosition(i,j)));
-                }
-            }
-        }
+        ChessGame.TeamColor teamColor = board.getPiece(startPosition).pieceColor;
+        ChessPiece piece = board.getPiece(startPosition);
+        var allMoves = piece.pieceMoves(board, startPosition);
 
         ChessGameHelper help = new ChessGameHelper();
-        for(ChessMove move : teamMoves){
+        for(ChessMove move : allMoves){
             ChessBoard tempBoard = new ChessBoard(board);
-            ChessPiece tempPiece = board.getPiece(move.startPosition);
+            ChessPiece tempPiece = tempBoard.getPiece(move.startPosition);
             tempBoard.addPiece(move.endPosition, tempPiece);
             tempBoard.addPiece(move.startPosition, null);
             if(!help.isInCheck(tempBoard, teamColor)){
@@ -91,32 +81,53 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
-        int startRow = move.startPosition.row;
-        int startCol = move.startPosition.col;
-        int endCol = move.endPosition.col;
-        int endRow = move.endPosition.row;
-
-        ChessPiece tempPiece = board.board[startRow][startCol];
+//        int startRow = move.startPosition.row;
+//        int startCol = move.startPosition.col;
+//        int endCol = move.endPosition.col;
+//        int endRow = move.endPosition.row;
+//
+//        ChessPiece tempPiece = board.board[startRow][startCol];
+//        if(tempPiece == null){
+//            throw new InvalidMoveException("no piece at start point");
+//        }
+//        if(tempPiece.pieceColor != team){
+//            throw new InvalidMoveException("not your turn");
+//        }
+//
+//        var possibleMoves = validMoves(move.startPosition);
+//        if(possibleMoves.contains(move)){
+//            board.board[startRow][startCol] = null;
+//            if(tempPiece.type == ChessPiece.PieceType.PAWN && (endRow == 1 || endRow == 8)){
+//                ChessPiece promotion = new ChessPiece(team, move.promotionPiece);
+//                board.board[endRow][endCol] = promotion;
+//            }
+//            else {
+//                board.board[endRow][endCol] = tempPiece;
+//            }
+//        }
+//        else{
+//            throw new InvalidMoveException("invalid move");
+//        }
+        ChessPiece tempPiece = board.getPiece(move.startPosition);
         if(tempPiece == null){
-            throw new InvalidMoveException("no piece at start point");
+            throw new InvalidMoveException("no piece here");
         }
         if(tempPiece.pieceColor != team){
-            throw new InvalidMoveException("not your turn");
+            throw new InvalidMoveException("not your team");
         }
-
-        var possibleMoves = validMoves(move.startPosition);
-        if(possibleMoves.contains(move)){
-            board.board[startRow][startCol] = null;
-            if(tempPiece.type == ChessPiece.PieceType.PAWN && (endRow == 1 || endRow == 8)){
-                ChessPiece promotion = new ChessPiece(team, move.promotionPiece);
-                board.board[endRow][endCol] = promotion;
-            }
-            else {
-                board.board[endRow][endCol] = tempPiece;
-            }
+        var allMoves = validMoves(move.startPosition);
+        if(!allMoves.contains(move)){
+            throw new InvalidMoveException("invalid move");
         }
         else{
-            throw new InvalidMoveException("invalid move");
+            if(tempPiece.type == ChessPiece.PieceType.PAWN && (move.endPosition.row == 1 || move.endPosition.row == 8)){
+                ChessPiece promotion = new ChessPiece(team, move.promotionPiece);
+                board.addPiece(move.endPosition, promotion);
+            }
+            else {
+                board.addPiece(move.endPosition, tempPiece);
+            }
+            board.addPiece(move.startPosition, null);
         }
 
 
