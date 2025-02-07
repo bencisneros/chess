@@ -80,34 +80,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
-//        int startRow = move.startPosition.row;
-//        int startCol = move.startPosition.col;
-//        int endCol = move.endPosition.col;
-//        int endRow = move.endPosition.row;
-//
-//        ChessPiece tempPiece = board.board[startRow][startCol];
-//        if(tempPiece == null){
-//            throw new InvalidMoveException("no piece at start point");
-//        }
-//        if(tempPiece.pieceColor != team){
-//            throw new InvalidMoveException("not your turn");
-//        }
-//
-//        var possibleMoves = validMoves(move.startPosition);
-//        if(possibleMoves.contains(move)){
-//            board.board[startRow][startCol] = null;
-//            if(tempPiece.type == ChessPiece.PieceType.PAWN && (endRow == 1 || endRow == 8)){
-//                ChessPiece promotion = new ChessPiece(team, move.promotionPiece);
-//                board.board[endRow][endCol] = promotion;
-//            }
-//            else {
-//                board.board[endRow][endCol] = tempPiece;
-//            }
-//        }
-//        else{
-//            throw new InvalidMoveException("invalid move");
-//        }
         ChessPiece tempPiece = board.getPiece(move.startPosition);
         if(tempPiece == null){
             throw new InvalidMoveException("no piece here");
@@ -185,41 +157,6 @@ public class ChessGame {
             }
         }
         return true;
-
-//        ChessPosition kingPosition = null;
-//        ChessPiece king = null;
-//        var kingMoves = new ArrayList<ChessMove>();
-//        for(int i = 1; i < 9; i++){
-//            for(int j = 1; j < 9; j++){
-//                ChessPiece tempPiece = board.board[i][j];
-//                if(tempPiece == null){
-//                    continue;
-//                }
-//                else if(tempPiece.pieceColor == teamColor && tempPiece.type == ChessPiece.PieceType.KING){
-//                    kingPosition = new ChessPosition(i,j);
-//                    king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-//                    kingMoves.addAll(king.pieceMoves(board, kingPosition));
-//                }
-//            }
-//        }
-//
-//        var kingEndPosition = new ArrayList<ChessPosition>();
-//        for(ChessMove move: kingMoves){
-//            kingEndPosition.add(move.endPosition);
-//        }
-//
-//        for(ChessPosition end : kingEndPosition){
-//            ChessBoard tempBoard = new ChessBoard(board);
-//            tempBoard.board[kingPosition.row][kingPosition.col] = null;
-//            tempBoard.board[end.row][end.col] = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-//
-//            ChessGameHelper checker = new ChessGameHelper();
-//            if(!checker.isInCheck(tempBoard,teamColor)){
-//                return false;
-//            }
-//        }
-//
-//        return true;
     }
 
     /**
