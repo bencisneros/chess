@@ -166,6 +166,8 @@ public class ChessGame {
             return false;
         }
 
+        var kingEndPositions = new ArrayList<ChessPosition>();
+        var opponentEndPositions = new ArrayList<ChessPosition>();
         ChessPosition kingPosition = null;
         var opponentMoves = new ArrayList<ChessMove>();
         for(int i = 1; i < 9; i++) {
@@ -178,15 +180,24 @@ public class ChessGame {
                     kingPosition = new ChessPosition(i, j);
                 }
                 else if(tempPiece.pieceColor != teamColor){
-                    opponentMoves.addAll(tempPiece.pieceMoves(board, new ChessPosition(i,j)));
+                    if(tempPiece.type != ChessPiece.PieceType.PAWN) {
+                        opponentMoves.addAll(tempPiece.pieceMoves(board, new ChessPosition(i, j)));
+                    }
+                    else{
+                        if(tempPiece.pieceColor == TeamColor.WHITE){
+                            opponentEndPositions.add(new ChessPosition(i + 1, j + 1));
+                            opponentEndPositions.add(new ChessPosition(i + 1, j - 1));
+                        }
+                        else{
+                            opponentEndPositions.add(new ChessPosition(i - 1, j + 1));
+                            opponentEndPositions.add(new ChessPosition(i - 1, j - 1));
+                        }
+                    }
                 }
             }
         }
         var kingMoves = new ArrayList<ChessMove>();
         kingMoves.addAll(board.board[kingPosition.row][kingPosition.col].pieceMoves(board, kingPosition));
-
-        var kingEndPositions = new ArrayList<ChessPosition>();
-        var opponentEndPositions = new ArrayList<ChessPosition>();
 
         for(ChessMove moves : kingMoves){
             kingEndPositions.add(moves.endPosition);
