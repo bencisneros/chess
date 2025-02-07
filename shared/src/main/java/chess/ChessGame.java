@@ -59,28 +59,11 @@ public class ChessGame {
         if(piece == null){
             return null;
         }
-        ChessBoard boardCopy = new ChessBoard(board);
-        TeamColor color = piece.getTeamColor();
+        ChessPiece tempPiece = board.board[row][col];
 
-        var opponentMoves = new ArrayList<ChessMove>();
-        for(int i = 1; i < 9; i++){
-            for(int j = 1; j < 9; j++){
-                ChessPiece tempPiece = board.board[i][j];
-                if(tempPiece == null){
-                    continue;
-                }
-                if(tempPiece.pieceColor != color){
-                    opponentMoves.addAll(tempPiece.pieceMoves(board,startPosition));
-                }
-
-            }
-        }
-
-
-        return piece.pieceMoves(board, startPosition);
-
-
-
+        var possibleMoves = new ArrayList<ChessMove>();
+        possibleMoves.addAll(tempPiece.pieceMoves(board, startPosition));
+        return possibleMoves;
     }
 
     /**
@@ -104,11 +87,16 @@ public class ChessGame {
             throw new InvalidMoveException("not your turn");
         }
 
-        var possibleMoves = new ArrayList<ChessMove>();
-        possibleMoves.addAll(tempPiece.pieceMoves(board, move.startPosition));
+        var possibleMoves = validMoves(move.startPosition);
         if(possibleMoves.contains(move)){
             board.board[startRow][startCol] = null;
-            board.board[endRow][endCol] = tempPiece;
+            if(tempPiece.type == ChessPiece.PieceType.PAWN && (endRow == 1 || endRow == 8)){
+                ChessPiece promotion = new ChessPiece(team, move.promotionPiece);
+                board.board[endRow][endCol] = promotion;
+            }
+            else {
+                board.board[endRow][endCol] = tempPiece;
+            }
         }
         else{
             throw new InvalidMoveException("invalid move");
@@ -177,7 +165,42 @@ public class ChessGame {
         if(!isInCheck(teamColor)){
             return false;
         }
-        return false;
+
+        ChessPosition kingPosition = null;
+        var opponentMoves = new ArrayList<ChessMove>();
+        for(int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPiece tempPiece = board.board[i][j];
+                if (tempPiece == null) {
+                    continue;
+                }
+                if (tempPiece.pieceColor == teamColor && tempPiece.type == ChessPiece.PieceType.KING) {
+                    kingPosition = new ChessPosition(i, j);
+                }
+                else if(tempPiece.pieceColor != teamColor){
+                    opponentMoves.addAll(tempPiece.pieceMoves(board, new ChessPosition(i,j)));
+                }
+            }
+        }
+        var kingMoves = new ArrayList<ChessMove>();
+        kingMoves.addAll(board.board[kingPosition.row][kingPosition.col].pieceMoves(board, kingPosition));
+
+        var kingEndPositions = new ArrayList<ChessPosition>();
+        var opponentEndPositions = new ArrayList<ChessPosition>();
+
+        for(ChessMove moves : kingMoves){
+            kingEndPositions.add(moves.endPosition);
+        }
+        for(ChessMove moves : opponentMoves){
+            opponentEndPositions.add(moves.endPosition);
+        }
+
+        for(ChessPosition position : kingEndPositions){
+            if(!opponentEndPositions.contains(position)){
+                return false;
+            }
+        }
+        return true;
 
 
     }
