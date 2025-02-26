@@ -1,4 +1,4 @@
 package DataAccess;
 
-public class GameData {
+public class GameDataAccess {
 }

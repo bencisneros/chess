@@ -1,13 +1,18 @@
 package DataAccess;
 
+import model.UserData;
+
 import java.util.HashMap;
 
-public class UserData {
+public class UserDataAccess {
 
-    private HashMap<String, model.UserData> users = new HashMap<>();
+    private final HashMap<String, model.UserData> userDataMemory = new HashMap<>();
 
-    public model.UserData getUser(model.UserData user){
-        return users.get(user.username());
-        
+    public UserData getUser(UserData user){
+        return userDataMemory.get(user.username());
+    }
+
+    public void createUser(UserData user){
+        userDataMemory.put(user.username(), user);
     }
 }
