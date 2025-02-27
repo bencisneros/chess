@@ -1,6 +1,7 @@
 package Server;
 
 import DataAccess.DataAccessException;
+import model.AuthData;
 import model.UserData;
 import com.google.gson.Gson;
 import spark.*;
@@ -34,6 +35,7 @@ public class Server {
         var user = new Gson().fromJson(req.body(), UserData.class);
         var auth = registerService.register(user);
         return new Gson().toJson(auth);
+
     }
 
 }

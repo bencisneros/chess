@@ -6,7 +6,11 @@ import java.util.HashMap;
 
 public class UserDataAccess {
 
-    private final HashMap<String, model.UserData> userDataMemory = new HashMap<>();
+    private final HashMap<String, model.UserData> userDataMemory;
+
+    public UserDataAccess(){
+        userDataMemory = new HashMap<>();
+    }
 
     public UserData getUser(UserData user){
         return userDataMemory.get(user.username());

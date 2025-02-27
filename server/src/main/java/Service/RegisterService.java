@@ -8,24 +8,27 @@ import model.UserData;
 import java.util.UUID;
 
 public class RegisterService {
-    private UserDataAccess userDataAccess;
-    private AuthDataAccess authDataAccess;
+    private UserDataAccess userDAO;
+    private AuthDataAccess authDAO;
+
     public RegisterService(){
+        this.userDAO = new UserDataAccess();
+        this.authDAO = new AuthDataAccess();
     }
 
-    public static String generateToken() {
+    private static String generateToken() {
         return UUID.randomUUID().toString();
     }
 
     public AuthData register(UserData user) throws DataAccessException {
-        if(userDataAccess.getUser(user) != null){
-            throw new DataAccessException("400 Error: username already taken");
+        if(userDAO.getUser(user) != null){
+            throw new DataAccessException("403 Error: already taken");
         }
 
-        userDataAccess.createUser(user);
+        userDAO.createUser(user);
 
         AuthData auth = new AuthData(generateToken(), user.username());
-        authDataAccess.createAuthData(auth);
+        authDAO.createAuthData(auth);
 
         return auth;
     }
