@@ -32,9 +32,6 @@ public class RegisterService {
 
         userDAO.createUser(user);
 
-        AuthData auth = new AuthData(generateToken(), user.username());
-        authDAO.createAuthData(auth);
-
-        return auth;
+        return authDAO.createAuthData(user);
     }
 }

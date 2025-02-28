@@ -15,10 +15,12 @@ public class Server {
 
     private final RegisterService registerService;
     private final ClearService clearService;
+    private final LoginService loginService;
 
     public Server(){
         registerService = new RegisterService();
         clearService = new ClearService();
+        loginService = new LoginService();
 
     }
 
@@ -31,6 +33,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::handleRegister);
         Spark.delete("/db", this::handleClear);
+        Spark.post("/session", this::handleLogin);
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -49,17 +52,15 @@ public class Server {
             var auth = registerService.register(user);
             return new Gson().toJson(auth);
         } catch (Exception e) {
+            String errorMessage = e.getMessage();
             if (e instanceof DataAccessException) {
-                String errorMessage = e.getMessage();
                 res.status(403);
                 return new Gson().toJson(Map.of("message", errorMessage));
             } else if (e instanceof NotEnoughInfo) {
-                String errorMessage = e.getMessage();
                 res.status(400);
                 return new Gson().toJson(Map.of("message", errorMessage));
             }
             else{
-                String errorMessage = e.getMessage();
                 res.status(500);
                 return new Gson().toJson(Map.of("message:", errorMessage));
             }
@@ -78,4 +79,21 @@ public class Server {
         }
     }
 
+    private Object handleLogin(Request req, Response res){
+        try {
+            var user = new Gson().fromJson(req.body(), UserData.class);
+            var auth = loginService.login(user);
+            return new Gson().toJson(auth);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if(e instanceof DataAccessException){
+                res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else{
+                res.status(500);
+                return new Gson().toJson(Map.of("message:", errorMessage));
+            }
+        }
+    }
 }

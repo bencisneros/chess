@@ -1,8 +1,7 @@
 import DataAccess.AuthDataAccessMemory;
 import DataAccess.GameDataAccessMemory;
 import DataAccess.UserDataAccessMemory;
-import Service.ClearService;
-import Service.RegisterService;
+import Service.*;
 import chess.ChessGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,8 @@ public class Service {
 
     @BeforeEach
     public void clearMaps(){
+        ClearService clear = new ClearService();
+        clear.clear();
     }
 
     @Test
@@ -23,15 +24,15 @@ public class Service {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService register = new RegisterService();
-        AuthData auth = register.register(user);
+        RegisterService registerService = new RegisterService();
+        AuthData auth = registerService.register(user);
 
         assertSame(username, auth.username());
         assertNotNull(auth.authToken());
     }
 
     @Test
-    public void invalidUsernameTest() {
+    public void invalidUsernameRegisterTest() {
         String username = "bencisneros";
         String email = "bcis2@byu.edu";
         String password = "abcd";
@@ -56,15 +57,15 @@ public class Service {
         var userDataAccessMemory = new UserDataAccessMemory();
         var gameDataAccessMemory = new GameDataAccessMemory();
 
-        var authData = new AuthData("1234", "username");
-        var authData1 = new AuthData("4321", "nameuser");
-        authDataAccessMemory.createAuthData(authData);
-        authDataAccessMemory.createAuthData(authData1);
-
         var userData = new UserData("name","email", "password");
         var userData1 = new UserData("name1","email1", "password1");
         userDataAccessMemory.createUser(userData);
         userDataAccessMemory.createUser(userData1);
+
+        var authData = new AuthData("1234", "username");
+        var authData1 = new AuthData("4321", "nameuser");
+        authDataAccessMemory.createAuthData(userData);
+        authDataAccessMemory.createAuthData(userData1);
 
         var gameData = new GameData(1, "white", "black","game", new ChessGame());
         var gameData1 = new GameData(2, "black", "white","game1", new ChessGame());
@@ -78,5 +79,42 @@ public class Service {
         assertTrue(gameDataAccessMemory.getGameMap().isEmpty());
     }
 
+    @Test
+    public void loginTest() throws Exception {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
 
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        registerService.register(user);
+
+        LoginService loginService = new LoginService();
+        AuthData authData = loginService.login(user);
+
+        assertSame(username, authData.username());
+        assertNotNull(authData.authToken());
+    }
+
+    @Test
+    public void unauthorizedLoginTest() {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        LoginService loginService = new LoginService();
+
+        UserData nonRegisteredUser = new UserData("abc", email, password);
+
+        try {
+            registerService.register(user);
+            loginService.login(nonRegisteredUser);
+        } catch (Exception e) {
+            assertEquals("401 Error: unauthorized", e.getMessage());
+        }
+    }
 }
