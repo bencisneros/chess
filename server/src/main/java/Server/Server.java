@@ -13,12 +13,12 @@ import java.util.Map;
 
 public class Server {
 
-    private RegisterService registerService;
-    private ClearService clearService;
+    private final RegisterService registerService;
+    private final ClearService clearService;
 
     public Server(){
         registerService = new RegisterService();
-        ClearService = new ClearService();
+        clearService = new ClearService();
 
     }
 
@@ -68,10 +68,14 @@ public class Server {
 
     private Object handleClear(Request req, Response res){
         try{
-
+            clearService.clear();
+            return new Gson().toJson(new Object());
         }
-
-        return null;
+        catch (Exception e){
+            String errorMessage = e.getMessage();
+            res.status(500);
+            return new Gson().toJson(Map.of("message:", errorMessage));
+        }
     }
 
 }

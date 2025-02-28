@@ -9,8 +9,8 @@ import model.UserData;
 import java.util.UUID;
 
 public class RegisterService {
-    private UserDataAccessMemory userDAO;
-    private AuthDataAccessMemory authDAO;
+    private final UserDataAccessMemory userDAO;
+    private final AuthDataAccessMemory authDAO;
 
     public RegisterService(){
         this.userDAO = new UserDataAccessMemory();
