@@ -1,21 +1,18 @@
 import DataAccess.AuthDataAccessMemory;
-import DataAccess.DataAccessException;
 import DataAccess.GameDataAccessMemory;
 import DataAccess.UserDataAccessMemory;
 import Service.ClearService;
 import Service.RegisterService;
 import chess.ChessGame;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class service {
+public class Service {
 
     @BeforeEach
     public void clearMaps(){
-
     }
 
     @Test

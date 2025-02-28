@@ -52,11 +52,11 @@ public class Server {
             if (e instanceof DataAccessException) {
                 String errorMessage = e.getMessage();
                 res.status(403);
-                return new Gson().toJson(Map.of("message:", errorMessage));
+                return new Gson().toJson(Map.of("message", errorMessage));
             } else if (e instanceof NotEnoughInfo) {
                 String errorMessage = e.getMessage();
                 res.status(400);
-                return new Gson().toJson(Map.of("message:", errorMessage));
+                return new Gson().toJson(Map.of("message", errorMessage));
             }
             else{
                 String errorMessage = e.getMessage();
