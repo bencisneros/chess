@@ -1,15 +1,14 @@
 package DataAccess;
 
 import model.AuthData;
-import model.UserData;
 
 import java.util.HashMap;
 
-public class AuthDataAccess {
+public class AuthDataAccessMemory {
 
     private final HashMap<String, AuthData> authDataMemory;
 
-    public AuthDataAccess(){
+    public AuthDataAccessMemory(){
         authDataMemory = new HashMap<>();
     }
 

@@ -4,11 +4,11 @@ import model.UserData;
 
 import java.util.HashMap;
 
-public class UserDataAccess {
+public class UserDataAccessMemory implements UserDAO {
 
     private final HashMap<String, model.UserData> userDataMemory;
 
-    public UserDataAccess(){
+    public UserDataAccessMemory(){
         userDataMemory = new HashMap<>();
     }
 
