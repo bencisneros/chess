@@ -10,8 +10,8 @@ import model.UserData;
 import java.util.Objects;
 
 public class LoginService {
-    public LoginService(){
 
+    public LoginService(){
     }
 
     public AuthData login(UserData userData) throws Exception{

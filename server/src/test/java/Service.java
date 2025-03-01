@@ -62,8 +62,6 @@ public class Service {
         userDataAccessMemory.createUser(userData);
         userDataAccessMemory.createUser(userData1);
 
-        var authData = new AuthData("1234", "username");
-        var authData1 = new AuthData("4321", "nameuser");
         authDataAccessMemory.createAuthData(userData);
         authDataAccessMemory.createAuthData(userData1);
 
@@ -117,4 +115,25 @@ public class Service {
             assertEquals("401 Error: unauthorized", e.getMessage());
         }
     }
+
+    @Test
+    public void logoutTest() throws Exception {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        AuthData authData = registerService.register(user);
+
+        LogoutService logoutService = new LogoutService();
+        logoutService.logout(user);
+
+        AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
+        var authMemory = authDAO.getAuthMap();
+
+        assertFalse(authMemory.containsValue(authData));
+    }
+
 }
