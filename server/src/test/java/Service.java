@@ -136,4 +136,23 @@ public class Service {
         assertFalse(authMemory.containsValue(authData));
     }
 
+    @Test
+    public void unauthorizedLogoutTest() {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        LogoutService logoutService = new LogoutService();
+
+        try {
+            registerService.register(user);
+            logoutService.logout("badAuthToken");
+        } catch (Exception e) {
+            assertEquals("401 Error: unauthorized", e.getMessage());
+        }
+    }
+
 }

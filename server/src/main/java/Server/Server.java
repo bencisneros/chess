@@ -99,7 +99,7 @@ public class Server {
 
     private Object handleLogout(Request req, Response res){
         try {
-            var authToken = new Gson().fromJson(req.body(), String.class);
+            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
             logoutService.logout(authToken);
             return new Gson().toJson(new Object());
         } catch (Exception e) {
