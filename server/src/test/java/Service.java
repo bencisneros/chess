@@ -155,4 +155,25 @@ public class Service {
         }
     }
 
+    @Test
+    public void createGameTest() throws Exception{
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+        var registerService = new RegisterService();
+        String authToken = registerService.register(user).authToken();
+
+        CreateGameService createGameService = new CreateGameService();
+        var gameData = createGameService.createGame("game1", authToken);
+
+        var gameDataAccessMemory = new GameDataAccessMemory();
+        var gameMap = gameDataAccessMemory.getGameMap();
+
+        assertTrue(gameMap.containsValue(gameData));
+
+
+    }
+
 }
