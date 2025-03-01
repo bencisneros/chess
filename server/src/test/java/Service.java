@@ -128,7 +128,7 @@ public class Service {
         AuthData authData = registerService.register(user);
 
         LogoutService logoutService = new LogoutService();
-        logoutService.logout(user);
+        logoutService.logout(authData.authToken());
 
         AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
         var authMemory = authDAO.getAuthMap();

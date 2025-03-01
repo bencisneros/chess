@@ -13,7 +13,14 @@ public class LogoutService {
     public LogoutService(){
     }
 
-    public void logout(UserData userData) throws Exception{
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void logout(String authToken) throws Exception{
+        AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
+        AuthData authData = authDAO.getAuth(authToken);
+
+        if(authData == null){
+            throw new DataAccessException("401 Error: unauthorized");
+        }
+
+        authDAO.deleteAuth(authData);
     }
 }

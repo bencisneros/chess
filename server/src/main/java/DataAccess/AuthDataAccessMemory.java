@@ -17,8 +17,19 @@ public class AuthDataAccessMemory {
     public AuthData createAuthData(UserData userData){
         String authToken = generateToken();
         AuthData authData = new AuthData(authToken, userData.username());
-        authDataMemory.put(authData.username(), authData);
+        authDataMemory.put(authToken, authData);
         return authData;
+    }
+
+    public void deleteAuth(AuthData authData){
+        authDataMemory.remove(authData.authToken());
+    }
+
+    public AuthData getAuth(String authToken){
+        if(!authDataMemory.containsKey(authToken)){
+            return null;
+        }
+        return authDataMemory.get(authToken);
     }
 
     public void clearAuthData(){

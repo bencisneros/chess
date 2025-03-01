@@ -16,12 +16,13 @@ public class Server {
     private final RegisterService registerService;
     private final ClearService clearService;
     private final LoginService loginService;
+    private final LogoutService logoutService;
 
     public Server(){
         registerService = new RegisterService();
         clearService = new ClearService();
         loginService = new LoginService();
-
+        logoutService = new LogoutService();
     }
 
 
@@ -34,6 +35,7 @@ public class Server {
         Spark.post("/user", this::handleRegister);
         Spark.delete("/db", this::handleClear);
         Spark.post("/session", this::handleLogin);
+        Spark.delete("/session", this::handleLogout);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -82,6 +84,24 @@ public class Server {
             var user = new Gson().fromJson(req.body(), UserData.class);
             var auth = loginService.login(user);
             return new Gson().toJson(auth);
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if(e instanceof DataAccessException){
+                res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else{
+                res.status(500);
+                return new Gson().toJson(Map.of("message:", errorMessage));
+            }
+        }
+    }
+
+    private Object handleLogout(Request req, Response res){
+        try {
+            var authToken = new Gson().fromJson(req.body(), String.class);
+            logoutService.logout(authToken);
+            return new Gson().toJson(new Object());
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             if(e instanceof DataAccessException){
