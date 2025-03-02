@@ -109,7 +109,7 @@ public class Server {
             return new Gson().toJson(new Object());
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if(e instanceof DataAccessException){
+            if(e instanceof Unauthorized){
                 res.status(401);
                 return new Gson().toJson(Map.of("message", errorMessage));
             }

@@ -2,6 +2,7 @@ package Service;
 
 import DataAccess.AuthDataAccessMemory;
 import DataAccess.DataAccessException;
+import DataAccess.Unauthorized;
 import DataAccess.UserDataAccessMemory;
 import jdk.jshell.spi.ExecutionControl;
 import model.AuthData;
@@ -18,7 +19,7 @@ public class LogoutService {
         AuthData authData = authDAO.getAuth(authToken);
 
         if(authData == null){
-            throw new DataAccessException("401 Error: unauthorized");
+            throw new Unauthorized("401 Error: unauthorized");
         }
 
         authDAO.deleteAuth(authData);

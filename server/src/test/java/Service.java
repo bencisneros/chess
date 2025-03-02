@@ -192,4 +192,23 @@ public class Service {
         }
     }
 
+    @Test
+    public void listGamesTest() throws Exception{
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        ListGamesService listGamesService = new ListGamesService();
+        CreateGameService createGameService = new CreateGameService();
+
+        AuthData authData = registerService.register(user);
+        createGameService.createGame("game1", authData.authToken());
+        createGameService.createGame("game2", authData.authToken());
+        createGameService.createGame("game3", authData.authToken());
+
+        assertEquals(3, listGamesService.listGames(authData.authToken()).length);
+    }
 }
