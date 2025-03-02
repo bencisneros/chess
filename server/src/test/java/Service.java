@@ -6,6 +6,9 @@ import chess.ChessGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
+
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Service {
@@ -229,5 +232,33 @@ public class Service {
             assertEquals("401 Error: unauthorized", e.getMessage());
         }
     }
+
+    @Test
+    public void joinGameTest() throws Exception {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        JoinGameService joinGameService = new JoinGameService();
+
+        var authData = registerService.register(user);
+
+        CreateGameService createGameService = new CreateGameService();
+        createGameService.createGame("game1", authData.authToken());
+
+        joinGameService.joinGame("white", 1);
+
+        GameDataAccessMemory gameDataAccessMemory = new GameDataAccessMemory();
+        var gameMap = gameDataAccessMemory.getGameMap();
+
+        var gameData = gameMap.get(1);
+
+        assertEquals("bencisneros", gameData.whiteUsername());
+
+    }
+
 
 }
