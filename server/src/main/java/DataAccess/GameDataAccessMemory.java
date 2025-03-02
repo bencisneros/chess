@@ -30,7 +30,38 @@ public class GameDataAccessMemory {
         return gameData;
     }
 
+    public GameData getGame(int gameID)throws Exception{
+        if(!gameDataMemory.containsKey(gameID)){
+            throw new DataAccessException("400 Error: bad request");
+        }
+        return gameDataMemory.get(gameID);
+    }
+
+    public void updateGame(String playerColor, String username, GameData gameData) throws Exception{
+        if(Objects.equals(playerColor, "WHITE")) {
+            if(!Objects.equals(gameData.whiteUsername(), "")){
+                throw new AlreadyTaken("403 Error: already taken");
+            }
+            GameData newGameData = new GameData(gameData.gameID(), username, gameData.blackUsername(),
+                                                gameData.gameName(), gameData.game());
+            gameDataMemory.put(gameData.gameID(), newGameData);
+        }
+        else if(Objects.equals(playerColor, "BLACK")){
+            if(!Objects.equals(gameData.blackUsername(), "")){
+                throw new AlreadyTaken("403 Error: already taken");
+            }
+            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), username,
+                                                gameData.gameName(), gameData.game());
+            gameDataMemory.put(gameData.gameID(), newGameData);
+        }
+        else{
+            throw new DataAccessException("400 Error: bad request");
+        }
+    }
+
     public HashMap<Integer, GameData> getGameMap(){
         return gameDataMemory;
     }
+
+
 }

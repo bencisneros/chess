@@ -249,7 +249,7 @@ public class Service {
         CreateGameService createGameService = new CreateGameService();
         createGameService.createGame("game1", authData.authToken());
 
-        joinGameService.joinGame("white", 1);
+        joinGameService.joinGame("WHITE", 1, authData.authToken());
 
         GameDataAccessMemory gameDataAccessMemory = new GameDataAccessMemory();
         var gameMap = gameDataAccessMemory.getGameMap();
@@ -257,7 +257,25 @@ public class Service {
         var gameData = gameMap.get(1);
 
         assertEquals("bencisneros", gameData.whiteUsername());
+    }
 
+    @Test
+    void joinBadAuth(){
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        JoinGameService joinGameService = new JoinGameService();
+
+        try {
+            registerService.register(user);
+            joinGameService.joinGame("WHITE", 1, "badAuthToken");
+        } catch (Exception e) {
+            assertEquals("401 Error: unauthorized", e.getMessage());
+        }
     }
 
 

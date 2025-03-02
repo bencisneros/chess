@@ -1,8 +1,10 @@
 package Server;
 
+import DataAccess.AlreadyTaken;
 import DataAccess.DataAccessException;
 import DataAccess.NotEnoughInfo;
 import DataAccess.Unauthorized;
+import chess.ChessGame;
 import com.google.gson.JsonSyntaxException;
 import model.AuthData;
 import model.GameData;
@@ -21,6 +23,7 @@ public class Server {
     private final LogoutService logoutService;
     private final CreateGameService createGameService;
     private final ListGamesService listGamesService;
+    private final JoinGameService joinGameService;
 
     public Server(){
         registerService = new RegisterService();
@@ -29,6 +32,7 @@ public class Server {
         logoutService = new LogoutService();
         createGameService = new CreateGameService();
         listGamesService = new ListGamesService();
+        joinGameService = new JoinGameService();
     }
 
 
@@ -44,6 +48,7 @@ public class Server {
         Spark.delete("/session", this::handleLogout);
         Spark.post("/game", this::handleCreateGame);
         Spark.get("/game", this::handleListGames);
+        Spark.put("/game", this::handleJoinGame);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -107,7 +112,7 @@ public class Server {
 
     private Object handleLogout(Request req, Response res){
         try {
-            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            String authToken = req.headers("authorization");
             logoutService.logout(authToken);
             return new Gson().toJson(new Object());
         } catch (Exception e) {
@@ -125,7 +130,7 @@ public class Server {
 
     private Object handleCreateGame(Request req, Response res){
         try {
-            String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            String authToken = req.headers("authorization");
             GameData tempGameData = new Gson().fromJson(req.body(), GameData.class);
             var gameData = createGameService.createGame(tempGameData.gameName(), authToken);
             return new Gson().toJson(Map.of("gameID", gameData.gameID()));
@@ -148,7 +153,7 @@ public class Server {
 
     private Object handleListGames(Request req, Response res){
         try {
-            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            String authToken = req.headers("authorization");
             var listOfGames = listGamesService.listGames(authToken);
             return new Gson().toJson(Map.of("games", listOfGames));
         } catch (Exception e) {
@@ -160,6 +165,34 @@ public class Server {
             else{
                 res.status(500);
                 return new Gson().toJson(Map.of("message:", errorMessage));
+            }
+        }
+    }
+
+    private Object handleJoinGame(Request req, Response res){
+        record JoinGameData(String playerColor, int gameID){}
+        try {
+            String authToken = req.headers("authorization");
+            JoinGameData joinGameData = new Gson().fromJson(req.body(), JoinGameData.class);
+            joinGameService.joinGame(joinGameData.playerColor(), joinGameData.gameID(), authToken);
+            return new Gson().toJson(new Object());
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if(e instanceof Unauthorized){
+                res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else if(e instanceof AlreadyTaken){
+                res.status(403);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else if(e instanceof DataAccessException){
+                res.status(400);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else{
+                res.status(500);
+                return new Gson().toJson(Map.of("message", errorMessage));
             }
         }
     }
