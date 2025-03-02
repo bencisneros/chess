@@ -20,6 +20,7 @@ public class Server {
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final CreateGameService createGameService;
+    private final ListGamesService listGamesService;
 
     public Server(){
         registerService = new RegisterService();
@@ -27,6 +28,7 @@ public class Server {
         loginService = new LoginService();
         logoutService = new LogoutService();
         createGameService = new CreateGameService();
+        listGamesService = new ListGamesService();
     }
 
 
@@ -41,6 +43,7 @@ public class Server {
         Spark.post("/session", this::handleLogin);
         Spark.delete("/session", this::handleLogout);
         Spark.post("/game", this::handleCreateGame);
+        Spark.get("/game", this::handleListGames);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -142,4 +145,23 @@ public class Server {
             }
         }
     }
+
+    private Object handleListGames(Request req, Response res){
+        try {
+            var authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            var listOfGames = listGamesService.listGames(authToken);
+            return new Gson().toJson(Map.of("games", listOfGames));
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if(e instanceof Unauthorized){
+                res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else{
+                res.status(500);
+                return new Gson().toJson(Map.of("message:", errorMessage));
+            }
+        }
+    }
+
 }

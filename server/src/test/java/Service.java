@@ -209,6 +209,25 @@ public class Service {
         createGameService.createGame("game2", authData.authToken());
         createGameService.createGame("game3", authData.authToken());
 
-        assertEquals(3, listGamesService.listGames(authData.authToken()).length);
+        assertEquals(3, listGamesService.listGames(authData.authToken()).size());
     }
+    @Test
+    public void unauthorizedListGamesTest() {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        ListGamesService listGamesService = new ListGamesService();
+
+        try {
+            registerService.register(user);
+            listGamesService.listGames("badAuthToken");
+        } catch (Exception e) {
+            assertEquals("401 Error: unauthorized", e.getMessage());
+        }
+    }
+
 }
