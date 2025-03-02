@@ -65,10 +65,8 @@ public class Service {
         authDataAccessMemory.createAuthData(userData);
         authDataAccessMemory.createAuthData(userData1);
 
-        var gameData = new GameData(1, "white", "black","game", new ChessGame());
-        var gameData1 = new GameData(2, "black", "white","game1", new ChessGame());
-        gameDataAccessMemory.createGameData(gameData);
-        gameDataAccessMemory.createGameData(gameData1);
+        gameDataAccessMemory.createGameData("game1");
+        gameDataAccessMemory.createGameData("game2");
 
         clearService.clear();
 
@@ -172,8 +170,26 @@ public class Service {
         var gameMap = gameDataAccessMemory.getGameMap();
 
         assertTrue(gameMap.containsValue(gameData));
+    }
+
+    @Test
+    public void unauthorizedCreateGameTest() {
+        String username = "bencisneros";
+        String email = "bcis2@byu.edu";
+        String password = "abcd";
+
+        UserData user = new UserData(username, email, password);
+
+        RegisterService registerService = new RegisterService();
+        CreateGameService createGameService = new CreateGameService();
 
 
+        try {
+            registerService.register(user);
+            createGameService.createGame("badAuthToken", "game");
+        } catch (Exception e) {
+            assertEquals("401 Error: unauthorized", e.getMessage());
+        }
     }
 
 }

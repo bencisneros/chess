@@ -2,8 +2,10 @@ package Server;
 
 import DataAccess.DataAccessException;
 import DataAccess.NotEnoughInfo;
+import DataAccess.Unauthorized;
 import com.google.gson.JsonSyntaxException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import com.google.gson.Gson;
 import spark.*;
@@ -17,12 +19,14 @@ public class Server {
     private final ClearService clearService;
     private final LoginService loginService;
     private final LogoutService logoutService;
+    private final CreateGameService createGameService;
 
     public Server(){
         registerService = new RegisterService();
         clearService = new ClearService();
         loginService = new LoginService();
         logoutService = new LogoutService();
+        createGameService = new CreateGameService();
     }
 
 
@@ -36,6 +40,7 @@ public class Server {
         Spark.delete("/db", this::handleClear);
         Spark.post("/session", this::handleLogin);
         Spark.delete("/session", this::handleLogout);
+        Spark.post("/game", this::handleCreateGame);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -106,6 +111,29 @@ public class Server {
             String errorMessage = e.getMessage();
             if(e instanceof DataAccessException){
                 res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else{
+                res.status(500);
+                return new Gson().toJson(Map.of("message:", errorMessage));
+            }
+        }
+    }
+
+    private Object handleCreateGame(Request req, Response res){
+        try {
+            String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            GameData tempGameData = new Gson().fromJson(req.body(), GameData.class);
+            var gameData = createGameService.createGame(tempGameData.gameName(), authToken);
+            return new Gson().toJson(Map.of("gameID", gameData.gameID()));
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if(e instanceof Unauthorized){
+                res.status(401);
+                return new Gson().toJson(Map.of("message", errorMessage));
+            }
+            else if(e instanceof DataAccessException){
+                res.status(400);
                 return new Gson().toJson(Map.of("message", errorMessage));
             }
             else{
