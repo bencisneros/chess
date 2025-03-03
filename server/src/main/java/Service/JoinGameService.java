@@ -25,7 +25,6 @@ public class JoinGameService {
 
         var gameData = gameDAO.getGame(gameID);
         gameDAO.updateGame(playerColor, authData.username(), gameData);
-
     }
 
 }

@@ -6,12 +6,13 @@ import DataAccess.Unauthorized;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ListGamesService {
     public ListGamesService(){
     }
 
-    record gameInfo(int gameID, String whiteUsername, String blackUserName, String gameName) {}
+    public record gameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}
 
     public ArrayList<gameInfo> listGames(String authToken) throws Exception{
         var listOfGames = new ArrayList<gameInfo>();
@@ -26,7 +27,13 @@ public class ListGamesService {
         for(GameData gameData : gamesMap.values()){
             int ID = gameData.gameID();
             String whiteUserName = gameData.whiteUsername();
+            if(Objects.equals(gameData.whiteUsername(), "")){
+                whiteUserName = null;
+            }
             String blackUsername = gameData.blackUsername();
+            if (Objects.equals(gameData.blackUsername(), "")){
+                blackUsername = null;
+            }
             String gameName = gameData.gameName();
             listOfGames.add(new gameInfo(ID, whiteUserName, blackUsername, gameName));
         }

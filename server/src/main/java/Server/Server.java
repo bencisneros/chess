@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import spark.*;
 import Service.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Server {
@@ -155,17 +156,17 @@ public class Server {
         try {
             String authToken = req.headers("authorization");
             var listOfGames = listGamesService.listGames(authToken);
-            return new Gson().toJson(Map.of("games", listOfGames));
+            var temp = new Gson().toJson(Map.of("games", listOfGames));
+            return temp;
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             if(e instanceof Unauthorized){
                 res.status(401);
-                return new Gson().toJson(Map.of("message", errorMessage));
             }
             else{
                 res.status(500);
-                return new Gson().toJson(Map.of("message:", errorMessage));
             }
+            return new Gson().toJson(Map.of("message", errorMessage));
         }
     }
 

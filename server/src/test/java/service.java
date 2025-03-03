@@ -244,14 +244,14 @@ public class service {
         var authData = registerService.register(user);
 
         CreateGameService createGameService = new CreateGameService();
-        createGameService.createGame("game1", authData.authToken());
+        var newGameData = createGameService.createGame("game1", authData.authToken());
 
-        joinGameService.joinGame("WHITE", 1, authData.authToken());
+        joinGameService.joinGame("WHITE", newGameData.gameID(), authData.authToken());
 
         GameDataAccessMemory gameDataAccessMemory = new GameDataAccessMemory();
         var gameMap = gameDataAccessMemory.getGameMap();
 
-        var gameData = gameMap.get(1);
+        var gameData = gameMap.get(newGameData.gameID());
 
         assertEquals("bencisneros", gameData.whiteUsername());
     }
@@ -269,7 +269,7 @@ public class service {
 
         try {
             registerService.register(user);
-            joinGameService.joinGame("WHITE", 1, "badAuthToken");
+            joinGameService.joinGame("WHITE", 1, "badAuthT ok en");
         } catch (Exception e) {
             assertEquals("401 Error: unauthorized", e.getMessage());
         }
