@@ -7,33 +7,33 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class GameDataAccessMemory {
-    private static final HashMap<Integer, GameData> gameDataMemory = new HashMap<>();
+    private static final HashMap<Integer, GameData> GAME_DATA_MEMORY = new HashMap<>();
     private static int gameID = 1;
 
     public void clearGameData(){
-        gameDataMemory.clear();
+        GAME_DATA_MEMORY.clear();
     }
 
     public GameData createGameData(String gameName) throws Exception{
         var gameData = new GameData(gameID, "", "", gameName, new ChessGame());
 
-        for(GameData tempGameData : gameDataMemory.values()){
+        for(GameData tempGameData : GAME_DATA_MEMORY.values()){
             if(Objects.equals(tempGameData.gameName(), gameName)){
                 throw new DataAccessException("400 Error: Bad Request");
             }
         }
 
-        gameDataMemory.put(gameID, gameData);
+        GAME_DATA_MEMORY.put(gameID, gameData);
         gameID++;
 
         return gameData;
     }
 
     public GameData getGame(int gameID)throws Exception{
-        if(!gameDataMemory.containsKey(gameID)){
+        if(!GAME_DATA_MEMORY.containsKey(gameID)){
             throw new DataAccessException("400 Error: bad request");
         }
-        return gameDataMemory.get(gameID);
+        return GAME_DATA_MEMORY.get(gameID);
     }
 
     public void updateGame(String playerColor, String username, GameData gameData) throws Exception{
@@ -43,7 +43,7 @@ public class GameDataAccessMemory {
             }
             GameData newGameData = new GameData(gameData.gameID(), username, gameData.blackUsername(),
                                                 gameData.gameName(), gameData.game());
-            gameDataMemory.put(gameData.gameID(), newGameData);
+            GAME_DATA_MEMORY.put(gameData.gameID(), newGameData);
         }
         else if(Objects.equals(playerColor, "BLACK")){
             if(!Objects.equals(gameData.blackUsername(), "")){
@@ -51,7 +51,7 @@ public class GameDataAccessMemory {
             }
             GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), username,
                                                 gameData.gameName(), gameData.game());
-            gameDataMemory.put(gameData.gameID(), newGameData);
+            GAME_DATA_MEMORY.put(gameData.gameID(), newGameData);
         }
         else{
             throw new DataAccessException("400 Error: bad request");
@@ -59,7 +59,7 @@ public class GameDataAccessMemory {
     }
 
     public HashMap<Integer, GameData> getGameMap(){
-        return gameDataMemory;
+        return GAME_DATA_MEMORY;
     }
 
 

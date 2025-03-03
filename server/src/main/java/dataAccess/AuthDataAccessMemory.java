@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class AuthDataAccessMemory {
 
-    private static final HashMap<String, AuthData> authDataMemory = new HashMap<>();
+    private static final HashMap<String, AuthData> AUTH_DATA_MEMORY = new HashMap<>();
 
     private static String generateToken() {
         return UUID.randomUUID().toString();
@@ -17,26 +17,26 @@ public class AuthDataAccessMemory {
     public AuthData createAuthData(UserData userData){
         String authToken = generateToken();
         AuthData authData = new AuthData(authToken, userData.username());
-        authDataMemory.put(authToken, authData);
+        AUTH_DATA_MEMORY.put(authToken, authData);
         return authData;
     }
 
     public void deleteAuth(AuthData authData){
-        authDataMemory.remove(authData.authToken());
+        AUTH_DATA_MEMORY.remove(authData.authToken());
     }
 
     public AuthData getAuth(String authToken){
-        if(!authDataMemory.containsKey(authToken)){
+        if(!AUTH_DATA_MEMORY.containsKey(authToken)){
             return null;
         }
-        return authDataMemory.get(authToken);
+        return AUTH_DATA_MEMORY.get(authToken);
     }
 
     public void clearAuthData(){
-        authDataMemory.clear();
+        AUTH_DATA_MEMORY.clear();
     }
 
     public HashMap<String, AuthData> getAuthMap(){
-        return authDataMemory;
+        return AUTH_DATA_MEMORY;
     }
 }

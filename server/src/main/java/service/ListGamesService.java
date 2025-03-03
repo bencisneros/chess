@@ -12,10 +12,10 @@ public class ListGamesService {
     public ListGamesService(){
     }
 
-    public record gameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+    public record GameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}
 
-    public ArrayList<gameInfo> listGames(String authToken) throws Exception{
-        var listOfGames = new ArrayList<gameInfo>();
+    public ArrayList<GameInfo> listGames(String authToken) throws Exception{
+        var listOfGames = new ArrayList<GameInfo>();
         AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
         GameDataAccessMemory gameDAO = new GameDataAccessMemory();
 
@@ -35,7 +35,7 @@ public class ListGamesService {
                 blackUsername = null;
             }
             String gameName = gameData.gameName();
-            listOfGames.add(new gameInfo(ID, whiteUserName, blackUsername, gameName));
+            listOfGames.add(new GameInfo(ID, whiteUserName, blackUsername, gameName));
         }
 
         return listOfGames;

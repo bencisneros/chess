@@ -6,21 +6,21 @@ import java.util.HashMap;
 
 public class UserDataAccessMemory implements UserDAO {
 
-    private static final HashMap<String, UserData> userDataMemory = new HashMap<>();
+    private static final HashMap<String, UserData> USER_DATA_MEMORY = new HashMap<>();
 
     public UserData getUser(UserData user){
-        return userDataMemory.get(user.username());
+        return USER_DATA_MEMORY.get(user.username());
     }
 
     public void createUser(UserData user){
-        userDataMemory.put(user.username(), user);
+        USER_DATA_MEMORY.put(user.username(), user);
     }
 
     public void clearUserData(){
-        userDataMemory.clear();
+        USER_DATA_MEMORY.clear();
     }
 
     public HashMap<String, UserData> getUserMap(){
-        return userDataMemory;
+        return USER_DATA_MEMORY;
     }
 }
