@@ -1,3 +1,5 @@
+package service;
+
 import DataAccess.AuthDataAccessMemory;
 import DataAccess.GameDataAccessMemory;
 import DataAccess.UserDataAccessMemory;
@@ -8,7 +10,7 @@ import model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class service {
+public class ServiceTests {
 
     @BeforeEach
     public void clearMaps(){
