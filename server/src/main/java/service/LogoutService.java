@@ -1,14 +1,8 @@
-package Service;
+package service;
 
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.DataAccessException;
-import DataAccess.Unauthorized;
-import DataAccess.UserDataAccessMemory;
-import jdk.jshell.spi.ExecutionControl;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.Unauthorized;
 import model.AuthData;
-import model.UserData;
-
-import java.util.Objects;
 
 public class LogoutService {
     public LogoutService(){

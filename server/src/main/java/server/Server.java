@@ -1,14 +1,14 @@
 package server;
 
-import DataAccess.AlreadyTaken;
-import DataAccess.DataAccessException;
-import DataAccess.NotEnoughInfo;
-import DataAccess.Unauthorized;
+import dataAccess.AlreadyTaken;
+import dataAccess.DataAccessException;
+import dataAccess.NotEnoughInfo;
+import dataAccess.Unauthorized;
 import model.GameData;
 import model.UserData;
 import com.google.gson.Gson;
 import spark.*;
-import Service.*;
+import service.*;
 
 import java.util.Map;
 

@@ -1,9 +1,9 @@
-package Service;
+package service;
 
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.DataAccessException;
-import DataAccess.NotEnoughInfo;
-import DataAccess.UserDataAccessMemory;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.DataAccessException;
+import dataAccess.NotEnoughInfo;
+import dataAccess.UserDataAccessMemory;
 import model.AuthData;
 import model.UserData;
 import java.util.UUID;

@@ -1,13 +1,8 @@
-package Service;
+package service;
 
-import DataAccess.AlreadyTaken;
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.GameDataAccessMemory;
-import DataAccess.Unauthorized;
-import chess.ChessGame;
-import model.GameData;
-
-import java.util.Objects;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.GameDataAccessMemory;
+import dataAccess.Unauthorized;
 
 public class JoinGameService {
 

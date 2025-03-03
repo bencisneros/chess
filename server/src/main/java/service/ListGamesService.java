@@ -1,8 +1,8 @@
-package Service;
+package service;
 
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.GameDataAccessMemory;
-import DataAccess.Unauthorized;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.GameDataAccessMemory;
+import dataAccess.Unauthorized;
 import model.GameData;
 
 import java.util.ArrayList;

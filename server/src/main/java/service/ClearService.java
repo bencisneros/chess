@@ -1,8 +1,8 @@
-package Service;
+package service;
 
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.GameDataAccessMemory;
-import DataAccess.UserDataAccessMemory;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.GameDataAccessMemory;
+import dataAccess.UserDataAccessMemory;
 
 public class ClearService {
 

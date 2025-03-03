@@ -1,10 +1,8 @@
-package Service;
+package service;
 
-import DataAccess.AuthDataAccessMemory;
-import DataAccess.DataAccessException;
-import DataAccess.GameDataAccessMemory;
-import DataAccess.Unauthorized;
-import chess.ChessGame;
+import dataAccess.AuthDataAccessMemory;
+import dataAccess.GameDataAccessMemory;
+import dataAccess.Unauthorized;
 import model.GameData;
 
 public class CreateGameService {
