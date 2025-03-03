@@ -1,19 +1,15 @@
-package Server;
+package server;
 
 import DataAccess.AlreadyTaken;
 import DataAccess.DataAccessException;
 import DataAccess.NotEnoughInfo;
 import DataAccess.Unauthorized;
-import chess.ChessGame;
-import com.google.gson.JsonSyntaxException;
-import model.AuthData;
 import model.GameData;
 import model.UserData;
 import com.google.gson.Gson;
 import spark.*;
 import Service.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class Server {
