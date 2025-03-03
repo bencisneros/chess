@@ -1,8 +1,8 @@
 package service;
 
-import dataAccess.AuthDataAccessMemory;
-import dataAccess.DataAccessException;
-import dataAccess.UserDataAccessMemory;
+import dataaccess.AuthDataAccessMemory;
+import dataaccess.DataAccessException;
+import dataaccess.UserDataAccessMemory;
 import model.AuthData;
 import model.UserData;
 

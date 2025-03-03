@@ -1,9 +1,9 @@
 package server;
 
-import dataAccess.AlreadyTaken;
-import dataAccess.DataAccessException;
-import dataAccess.NotEnoughInfo;
-import dataAccess.Unauthorized;
+import dataaccess.AlreadyTaken;
+import dataaccess.DataAccessException;
+import dataaccess.NotEnoughInfo;
+import dataaccess.Unauthorized;
 import model.GameData;
 import model.UserData;
 import com.google.gson.Gson;

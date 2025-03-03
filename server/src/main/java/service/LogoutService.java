@@ -1,7 +1,7 @@
 package service;
 
-import dataAccess.AuthDataAccessMemory;
-import dataAccess.Unauthorized;
+import dataaccess.AuthDataAccessMemory;
+import dataaccess.Unauthorized;
 import model.AuthData;
 
 public class LogoutService {

@@ -1,8 +1,8 @@
 package service;
 
-import dataAccess.AuthDataAccessMemory;
-import dataAccess.GameDataAccessMemory;
-import dataAccess.UserDataAccessMemory;
+import dataaccess.AuthDataAccessMemory;
+import dataaccess.GameDataAccessMemory;
+import dataaccess.UserDataAccessMemory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
