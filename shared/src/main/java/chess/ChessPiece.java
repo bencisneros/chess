@@ -131,6 +131,15 @@ public class ChessPiece {
         return moves;
     }
 
+    private Collection<ChessMove> pawnPromotionHelper(ChessPosition myPosition, ChessPosition endPosition){
+        List<ChessMove> moves = new ArrayList<>();
+        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
+        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
+        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
+        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+        return moves;
+    }
+
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.row;
         int col = myPosition.col;
@@ -140,10 +149,7 @@ public class ChessPiece {
             if (board.board[row + 1][col] == null && row + 1 < 9) {
                 ChessPosition endPosition = new ChessPosition(row + 1, col);
                 if(row + 1 == 8){
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                 }
                 else {
                     moves.add(new ChessMove(myPosition, endPosition, null));
@@ -153,10 +159,7 @@ public class ChessPiece {
                 if (board.board[row + 1][col + 1].pieceColor == ChessGame.TeamColor.BLACK) {
                     ChessPosition endPosition = new ChessPosition(row + 1, col + 1);
                     if(row == 7) {
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                        moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                     }
                     else {
                         moves.add(new ChessMove(myPosition, endPosition, null));
@@ -167,10 +170,7 @@ public class ChessPiece {
                 if (board.board[row + 1][col - 1].pieceColor == ChessGame.TeamColor.BLACK) {
                     ChessPosition endPosition = new ChessPosition(row + 1, col - 1);
                     if(row == 7) {
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                        moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                     }
                     else {
                         moves.add(new ChessMove(myPosition, endPosition, null));
@@ -189,10 +189,7 @@ public class ChessPiece {
             if (board.board[row - 1][col] == null && row - 1 > 0) {
                 ChessPosition endPosition = new ChessPosition(row - 1, col);
                 if(row - 1 == 1){
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                    moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                    moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                 }
                 else {
                     moves.add(new ChessMove(myPosition, endPosition, null));
@@ -202,10 +199,7 @@ public class ChessPiece {
                 if (board.board[row - 1][col - 1].pieceColor == ChessGame.TeamColor.WHITE) {
                     ChessPosition endPosition = new ChessPosition(row - 1, col - 1);
                     if(row == 2){
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                        moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                     }
                     else {
                         moves.add(new ChessMove(myPosition, endPosition, null));
@@ -216,10 +210,7 @@ public class ChessPiece {
                 if (board.board[row - 1][col + 1].pieceColor == ChessGame.TeamColor.WHITE) {
                     ChessPosition endPosition = new ChessPosition(row - 1, col + 1);
                     if(row == 2){
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, endPosition, PieceType.KNIGHT));
+                        moves.addAll(pawnPromotionHelper(myPosition, endPosition));
                     }
                     else {
                         moves.add(new ChessMove(myPosition, endPosition, null));

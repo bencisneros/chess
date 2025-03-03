@@ -25,7 +25,7 @@ public class ListGamesService {
 
         var gamesMap = gameDAO.getGameMap();
         for(GameData gameData : gamesMap.values()){
-            int ID = gameData.gameID();
+            int iD = gameData.gameID();
             String whiteUserName = gameData.whiteUsername();
             if(Objects.equals(gameData.whiteUsername(), "")){
                 whiteUserName = null;
@@ -35,7 +35,7 @@ public class ListGamesService {
                 blackUsername = null;
             }
             String gameName = gameData.gameName();
-            listOfGames.add(new GameInfo(ID, whiteUserName, blackUsername, gameName));
+            listOfGames.add(new GameInfo(iD, whiteUserName, blackUsername, gameName));
         }
 
         return listOfGames;
