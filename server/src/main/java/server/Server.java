@@ -152,8 +152,7 @@ public class Server {
         try {
             String authToken = req.headers("authorization");
             var listOfGames = listGamesService.listGames(authToken);
-            var temp = new Gson().toJson(Map.of("games", listOfGames));
-            return temp;
+            return new Gson().toJson(Map.of("games", listOfGames));
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             if(e instanceof Unauthorized){
