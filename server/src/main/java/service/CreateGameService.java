@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccessMemory;
-import dataaccess.GameDataAccessMemory;
-import dataaccess.Unauthorized;
+import dataaccess.*;
 import model.GameData;
 
 public class CreateGameService {
@@ -12,8 +10,8 @@ public class CreateGameService {
     }
 
     public GameData createGame(String gameName, String authToken) throws Exception{
-        AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
-        GameDataAccessMemory gameDAO = new GameDataAccessMemory();
+        AuthDAO authDAO = new AuthDataAccessMemory();
+        GameDAO gameDAO = new GameDataAccessMemory();
 
         var authData = authDAO.getAuth(authToken);
         if(authData == null){

@@ -1,14 +1,12 @@
 package service;
 
-import dataaccess.AuthDataAccessMemory;
-import dataaccess.GameDataAccessMemory;
-import dataaccess.UserDataAccessMemory;
+import dataaccess.*;
 
 public class ClearService {
 
-    private final AuthDataAccessMemory authDataAccessMemory;
-    private final GameDataAccessMemory gameDataAccessMemory;
-    private final UserDataAccessMemory userDataAccessMemory;
+    private final AuthDAO authDataAccessMemory;
+    private final GameDAO gameDataAccessMemory;
+    private final UserDAO userDataAccessMemory;
 
     public ClearService(){
         authDataAccessMemory = new AuthDataAccessMemory();

@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class GameDataAccessMemory {
+public class GameDataAccessMemory implements GameDAO {
     private static final HashMap<Integer, GameData> GAME_DATA_MEMORY = new HashMap<>();
     private static int gameID = 1;
 
@@ -29,7 +29,7 @@ public class GameDataAccessMemory {
         return gameData;
     }
 
-    public GameData getGame(int gameID)throws Exception{
+    public GameData getGame(int gameID) throws Exception{
         if(!GAME_DATA_MEMORY.containsKey(gameID)){
             throw new DataAccessException("400 Error: bad request");
         }

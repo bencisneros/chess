@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccessMemory;
-import dataaccess.DataAccessException;
-import dataaccess.UserDataAccessMemory;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
@@ -14,8 +12,8 @@ public class LoginService {
     }
 
     public AuthData login(UserData userData) throws Exception{
-        var userDAO = new UserDataAccessMemory();
-        var authDao = new AuthDataAccessMemory();
+        UserDAO userDAO = new UserDataAccessMemory();
+        AuthDAO authDao = new AuthDataAccessMemory();
         var tempUser = userDAO.getUser(userData);
 
         if(tempUser == null){

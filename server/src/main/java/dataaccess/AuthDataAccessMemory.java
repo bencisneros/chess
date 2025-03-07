@@ -6,7 +6,7 @@ import model.UserData;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class AuthDataAccessMemory {
+public class AuthDataAccessMemory implements AuthDAO{
 
     private static final HashMap<String, AuthData> AUTH_DATA_MEMORY = new HashMap<>();
 

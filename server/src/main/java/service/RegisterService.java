@@ -1,16 +1,13 @@
 package service;
 
-import dataaccess.AuthDataAccessMemory;
-import dataaccess.DataAccessException;
-import dataaccess.NotEnoughInfo;
-import dataaccess.UserDataAccessMemory;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import java.util.UUID;
 
 public class RegisterService {
-    private final UserDataAccessMemory userDAO;
-    private final AuthDataAccessMemory authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public RegisterService(){
         this.userDAO = new UserDataAccessMemory();

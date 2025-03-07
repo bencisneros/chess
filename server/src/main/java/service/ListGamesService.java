@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccessMemory;
-import dataaccess.GameDataAccessMemory;
-import dataaccess.Unauthorized;
+import dataaccess.*;
 import model.GameData;
 
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ public class ListGamesService {
 
     public ArrayList<GameInfo> listGames(String authToken) throws Exception{
         var listOfGames = new ArrayList<GameInfo>();
-        AuthDataAccessMemory authDAO = new AuthDataAccessMemory();
-        GameDataAccessMemory gameDAO = new GameDataAccessMemory();
+        AuthDAO authDAO = new AuthDataAccessMemory();
+        GameDAO gameDAO = new GameDataAccessMemory();
 
         if(authDAO.getAuth(authToken) == null){
             throw new Unauthorized("401 Error: unauthorized");
