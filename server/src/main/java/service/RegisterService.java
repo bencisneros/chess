@@ -9,9 +9,9 @@ public class RegisterService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
 
-    public RegisterService(){
-        this.userDAO = new UserDataAccessMemory();
-        this.authDAO = new AuthDataAccessMemory();
+    public RegisterService() throws Exception{
+        this.userDAO = new UserDatabase(); // new UserDataAccessMemory();
+        this.authDAO = new AuthDatabase(); new AuthDataAccessMemory();
     }
 
     private static String generateToken() {

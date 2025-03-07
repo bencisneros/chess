@@ -14,8 +14,8 @@ public class ListGamesService {
 
     public ArrayList<GameInfo> listGames(String authToken) throws Exception{
         var listOfGames = new ArrayList<GameInfo>();
-        AuthDAO authDAO = new AuthDataAccessMemory();
-        GameDAO gameDAO = new GameDataAccessMemory();
+        AuthDAO authDAO = new AuthDatabase(); // new AuthDataAccessMemory();
+        GameDAO gameDAO = new GameDatabase(); // new GameDataAccessMemory();
 
         if(authDAO.getAuth(authToken) == null){
             throw new Unauthorized("401 Error: unauthorized");

@@ -8,8 +8,8 @@ public class JoinGameService {
     }
 
     public void joinGame(String playerColor, int gameID, String authToken) throws Exception{
-        AuthDAO authDAO = new AuthDataAccessMemory();
-        GameDAO gameDAO = new GameDataAccessMemory();
+        AuthDAO authDAO = new AuthDatabase(); // new AuthDataAccessMemory();
+        GameDAO gameDAO = new GameDatabase();// new GameDataAccessMemory();
 
         var authData = authDAO.getAuth(authToken);
         if(authData == null){

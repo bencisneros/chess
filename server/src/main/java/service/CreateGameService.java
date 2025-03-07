@@ -10,8 +10,8 @@ public class CreateGameService {
     }
 
     public GameData createGame(String gameName, String authToken) throws Exception{
-        AuthDAO authDAO = new AuthDataAccessMemory();
-        GameDAO gameDAO = new GameDataAccessMemory();
+        AuthDAO authDAO = new AuthDatabase(); //new AuthDataAccessMemory();
+        GameDAO gameDAO = new GameDatabase(); //new GameDataAccessMemory();
 
         var authData = authDAO.getAuth(authToken);
         if(authData == null){

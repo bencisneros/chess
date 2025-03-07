@@ -23,13 +23,17 @@ public class Server {
     private final JoinGameService joinGameService;
 
     public Server(){
-        registerService = new RegisterService();
-        clearService = new ClearService();
-        loginService = new LoginService();
-        logoutService = new LogoutService();
-        createGameService = new CreateGameService();
-        listGamesService = new ListGamesService();
-        joinGameService = new JoinGameService();
+        try {
+            registerService = new RegisterService();
+            clearService = new ClearService();
+            loginService = new LoginService();
+            logoutService = new LogoutService();
+            createGameService = new CreateGameService();
+            listGamesService = new ListGamesService();
+            joinGameService = new JoinGameService();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

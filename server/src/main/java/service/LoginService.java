@@ -12,8 +12,8 @@ public class LoginService {
     }
 
     public AuthData login(UserData userData) throws Exception{
-        UserDAO userDAO = new UserDataAccessMemory();
-        AuthDAO authDao = new AuthDataAccessMemory();
+        UserDAO userDAO = new UserDatabase(); // new UserDataAccessMemory();
+        AuthDAO authDao = new AuthDatabase(); // new AuthDataAccessMemory();
         var tempUser = userDAO.getUser(userData);
 
         if(tempUser == null){
