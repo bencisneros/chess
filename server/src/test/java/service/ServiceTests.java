@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServiceTests {
 
     @BeforeEach
-    public void clearMaps(){
+    public void clearMaps() throws Exception {
         ClearService clear = new ClearService();
         clear.clear();
     }
@@ -40,9 +40,9 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService register = new RegisterService();
 
         try {
+            RegisterService register = new RegisterService();
             register.register(user);
             register.register(user);
         } catch (Exception e) {
@@ -102,12 +102,11 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService registerService = new RegisterService();
-        LoginService loginService = new LoginService();
-
         UserData nonRegisteredUser = new UserData("abc", email, password);
 
         try {
+            RegisterService registerService = new RegisterService();
+            LoginService loginService = new LoginService();
             registerService.register(user);
             loginService.login(nonRegisteredUser);
         } catch (Exception e) {
@@ -143,10 +142,10 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService registerService = new RegisterService();
-        LogoutService logoutService = new LogoutService();
 
         try {
+            RegisterService registerService = new RegisterService();
+            LogoutService logoutService = new LogoutService();
             registerService.register(user);
             logoutService.logout("badAuthToken");
         } catch (Exception e) {
@@ -181,11 +180,9 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService registerService = new RegisterService();
-        CreateGameService createGameService = new CreateGameService();
-
-
         try {
+            RegisterService registerService = new RegisterService();
+            CreateGameService createGameService = new CreateGameService();
             registerService.register(user);
             createGameService.createGame("badAuthToken", "game");
         } catch (Exception e) {
@@ -220,10 +217,9 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService registerService = new RegisterService();
-        ListGamesService listGamesService = new ListGamesService();
-
         try {
+            RegisterService registerService = new RegisterService();
+            ListGamesService listGamesService = new ListGamesService();
             registerService.register(user);
             listGamesService.listGames("badAuthToken");
         } catch (Exception e) {
@@ -265,10 +261,9 @@ public class ServiceTests {
 
         UserData user = new UserData(username, email, password);
 
-        RegisterService registerService = new RegisterService();
-        JoinGameService joinGameService = new JoinGameService();
-
         try {
+            RegisterService registerService = new RegisterService();
+            JoinGameService joinGameService = new JoinGameService();
             registerService.register(user);
             joinGameService.joinGame("WHITE", 1, "badAuthT ok en");
         } catch (Exception e) {

@@ -1,7 +1,16 @@
 package dataaccess;
 
+import model.AuthData;
+import model.GameData;
+import model.UserData;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public class DatabaseManager {
     private static final String DATABASE_NAME;
@@ -70,30 +79,84 @@ public class DatabaseManager {
         }
     }
 
-    private final String[] createStatements = {
+    private final String[] createStatement1 = {
             """
-            CREATE TABLE IF NOT EXISTS  pet (
-              `id` int NOT NULL AUTO_INCREMENT,
-              `name` varchar(256) NOT NULL,
-              `type` ENUM('CAT', 'DOG', 'FISH', 'FROG', 'ROCK') DEFAULT 'CAT',
-              `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(type),
-              INDEX(name)
+            CREATE TABLE IF NOT EXISTS  authData (
+              `authToken` varchar(256) NOT NULL,
+              `username` varchar(256) NOT NULL,
+              PRIMARY KEY (`authToken`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
 
-    public void configureDatabase() throws Exception {
-        createDatabase();
+    private final String[] createStatement2 = {
+            """
+            CREATE TABLE IF NOT EXISTS  gameData (
+              `gameID` int NOT NULL AUTO_INCREMENT,
+              `whiteUsername` varchar(256),
+              `blackUsername` varchar(256),
+              `gameName` varchar(256) NOT NULL,
+              `game` varchar(256) NOT NULL,
+              PRIMARY KEY (`gameID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
+    private final String[] createStatement3 = {
+            """
+            CREATE TABLE IF NOT EXISTS  userData (
+              `username` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL,
+              `password` varchar(256) NOT NULL,
+              PRIMARY KEY (`username`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+
+
+
+    public int executeUpdate(String statement, Object... params) throws Exception {
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param instanceof UserData u) ps.setString(i + 1, u.toString());
+                    else if (param instanceof GameData g) ps.setString(i + 1, g.toString());
+                    else if (param instanceof AuthData a) ps.setString(i + 1, a.toString());
+                    else if (param == null) ps.setNull(i + 1, NULL);
                 }
+                ps.executeUpdate();
+
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
             }
-        } catch (SQLException ex) {
-            throw new Exception(String.format("Unable to configure database: %s", ex.getMessage()));
+        } catch (SQLException e) {
+            throw new Exception(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
+    }
+
+    public void configureDatabase() throws Exception {
+        ArrayList<String[]> CREATE_STATEMENTS = new ArrayList<>();
+        CREATE_STATEMENTS.add(createStatement1);
+        CREATE_STATEMENTS.add(createStatement2);
+        CREATE_STATEMENTS.add(createStatement3);
+        createDatabase();
+        for(var createStatements : CREATE_STATEMENTS) {
+            try (var conn = DatabaseManager.getConnection()) {
+                for (var statement : createStatements) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new Exception(String.format("Unable to configure database: %s", ex.getMessage()));
+            }
         }
     }
 }
