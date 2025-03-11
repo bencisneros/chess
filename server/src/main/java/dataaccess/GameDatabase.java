@@ -6,13 +6,16 @@ import java.util.HashMap;
 
 public class GameDatabase implements GameDAO{
 
+    private final DatabaseManager databaseManager;
+
     public GameDatabase() throws Exception{
-        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager = new DatabaseManager();
         databaseManager.configureDatabase();
     }
 
-    public void clearGameData() {
-
+    public void clearGameData() throws Exception {
+        String statement = "TRUNCATE gamedata";
+        databaseManager.executeUpdate(statement);
     }
 
     public GameData createGameData(String gameName) throws Exception {

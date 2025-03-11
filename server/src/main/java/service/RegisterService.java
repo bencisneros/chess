@@ -11,7 +11,7 @@ public class RegisterService {
 
     public RegisterService() throws Exception{
         this.userDAO = new UserDatabase(); // new UserDataAccessMemory();
-        this.authDAO = new AuthDatabase(); new AuthDataAccessMemory();
+        this.authDAO = new AuthDatabase(); // new AuthDataAccessMemory();
     }
 
     private static String generateToken() {

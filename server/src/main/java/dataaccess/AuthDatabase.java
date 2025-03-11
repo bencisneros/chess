@@ -3,15 +3,27 @@ package dataaccess;
 import model.AuthData;
 import model.UserData;
 
+import java.util.UUID;
+
 public class AuthDatabase implements AuthDAO{
 
+    private final DatabaseManager databaseManager;
+
     public AuthDatabase() throws Exception{
-        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager = new DatabaseManager();
         databaseManager.configureDatabase();
     }
 
-    public AuthData createAuthData(UserData userData) {
-        return null;
+    private static String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    public AuthData createAuthData(UserData userData) throws Exception {
+        var statement = "INSERT INTO authData (authToken, username) VALUES (?, ?)";
+        String authToken = generateToken();
+        String username = userData.username();
+        databaseManager.executeUpdate(statement, authToken, username);
+        return new AuthData(authToken, username);
     }
 
     public void deleteAuth(AuthData authData) {
@@ -22,7 +34,8 @@ public class AuthDatabase implements AuthDAO{
         return null;
     }
 
-    public void clearAuthData() {
-
+    public void clearAuthData() throws Exception {
+        String statement = "TRUNCATE authData";
+        databaseManager.executeUpdate(statement);
     }
 }
