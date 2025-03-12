@@ -10,6 +10,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import service.ClearService;
 import service.RegisterService;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTests {
@@ -94,7 +96,7 @@ public class DataAccessTests {
 
         var authData = registerService.register(user);
 
-        assertTrue(authData == authDatabase.getAuth(authData.authToken()));
+        assertEquals(authData.authToken(), authDatabase.getAuth(authData.authToken()).authToken());
     }
 
     @Test

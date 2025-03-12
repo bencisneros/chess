@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 import model.UserData;
 
+import java.sql.ResultSet;
 import java.util.UUID;
 
 public class AuthDatabase implements AuthDAO{
@@ -30,8 +31,27 @@ public class AuthDatabase implements AuthDAO{
 
     }
 
-    public AuthData getAuth(String authToken) {
+    public AuthData getAuth(String authToken) throws Exception {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username FROM authData WHERE authToken=?";
+            try (var c = conn.prepareStatement(statement)) {
+                c.setString(1,authToken);
+                try (var rs = c.executeQuery()) {
+                    if (rs.next()) {
+                        return readAuth(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception(String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
+    }
+
+    private AuthData readAuth(ResultSet rs) throws Exception{
+        String authToken = rs.getString("authToken");
+        String username = rs.getString("username");
+        return new AuthData(authToken, username);
     }
 
     public void clearAuthData() throws Exception {
