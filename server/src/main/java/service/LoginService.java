@@ -22,7 +22,8 @@ public class LoginService {
 
         String clientPassword = userData.password();
         String daoPassword = tempUser.password();
-        if(!Objects.equals(clientPassword, daoPassword)){
+
+        if(!userDAO.checkPassword(clientPassword, daoPassword)){
             throw new DataAccessException("401 Error: unauthorized");
         }
 

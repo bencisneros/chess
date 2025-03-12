@@ -3,6 +3,7 @@ package dataaccess;
 import model.UserData;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UserDataAccessMemory implements UserDAO {
 
@@ -18,6 +19,10 @@ public class UserDataAccessMemory implements UserDAO {
 
     public void clearUserData(){
         USER_DATA_MEMORY.clear();
+    }
+
+    public boolean checkPassword(String normalPassword, String hashedPassword) {
+        return Objects.equals(normalPassword, hashedPassword);
     }
 
     public HashMap<String, UserData> getUserMap(){

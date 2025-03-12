@@ -44,6 +44,10 @@ public class UserDatabase implements UserDAO{
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }
 
+    public boolean checkPassword(String normalPassword, String hashedPassword){
+        return BCrypt.checkpw(normalPassword, hashedPassword);
+    }
+
 
     public void clearUserData() throws Exception {
         String statement = "TRUNCATE userdata";

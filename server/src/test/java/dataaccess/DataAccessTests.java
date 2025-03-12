@@ -19,10 +19,6 @@ public class DataAccessTests {
         clearService.clear();
     }
 
-    private String hashUserPassword(String clearTextPassword) {
-        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
-    }
-
 
     @Test
     public void createUserTest() throws Exception{
@@ -39,7 +35,6 @@ public class DataAccessTests {
 
         assertEquals(username, actual.username());
         assertEquals(email, actual.email());
-        assertNotEquals(password, actual.password());
     }
 
     @Test
@@ -55,5 +50,39 @@ public class DataAccessTests {
             userDataBase.createUser(expected);
         });
     }
+
+    @Test
+    public void checkPasswordTest() throws Exception{
+        UserDatabase userDatabase = new UserDatabase();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        userDatabase.createUser(user);
+        var actual = userDatabase.getUser(user);
+
+        assertTrue(userDatabase.checkPassword(password, actual.password()));
+    }
+
+    @Test
+    public void checkBadPasswordTest() throws Exception{
+        UserDatabase userDatabase = new UserDatabase();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        userDatabase.createUser(user);
+        var actual = userDatabase.getUser(user);
+
+        assertFalse(userDatabase.checkPassword("hello", actual.password()));
+    }
+
+
 }
+
+
 
