@@ -175,7 +175,7 @@ public class DataAccessTests {
         var gameData = gameDatabase.createGameData("game1");
         String whiteUsername = "username";
         gameDatabase.updateGame("WHITE", whiteUsername, gameData);
-        var newGameData = gameDatabase.getGame(1);
+        var newGameData = gameDatabase.getGame(gameData.gameID());
 
         assertEquals(whiteUsername, newGameData.whiteUsername());
     }
@@ -192,13 +192,13 @@ public class DataAccessTests {
     @Test
     public void listGamesTest() throws Exception{
         GameDatabase gameDatabase = new GameDatabase();
-        gameDatabase.createGameData("game1");
-        gameDatabase.createGameData("game2");
-        gameDatabase.createGameData("game3");
+        var temp = gameDatabase.createGameData("game1");
+        var temp1 = gameDatabase.createGameData("game2");
+        var temp2 = gameDatabase.createGameData("game3");
 
-        GameData gameData = new GameData(1, "", "", "game1", new ChessGame());
-        GameData gameData1 = new GameData(2, "", "", "game2", new ChessGame());
-        GameData gameData2 = new GameData(3, "", "", "game3", new ChessGame());
+        GameData gameData = new GameData(temp.gameID(), "", "", "game1", new ChessGame());
+        GameData gameData1 = new GameData(temp1.gameID(), "", "", "game2", new ChessGame());
+        GameData gameData2 = new GameData(temp2.gameID(), "", "", "game3", new ChessGame());
 
         var map = new HashMap<Integer, GameData>();
         map.put(1, gameData);

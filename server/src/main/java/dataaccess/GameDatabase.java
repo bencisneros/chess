@@ -6,6 +6,7 @@ import model.GameData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -83,7 +84,21 @@ public class GameDatabase implements GameDAO{
         }
     }
 
-    public HashMap<Integer, GameData> getGameMap() {
-        return null;
+    public HashMap<Integer, GameData> getGameMap() throws Exception {
+        var map = new HashMap<Integer, GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM gameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        map.put(rs.getInt("gameID"), readGame(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
+        return map;
     }
 }
