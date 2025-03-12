@@ -33,7 +33,7 @@ public class UserDatabase implements UserDAO{
     }
 
     public void createUser(UserData user) throws Exception {
-        var statement = "INSERT INTO userdata (username, email, password) VALUES (?, ?, ?)";
+        var statement = "INSERT INTO userData (username, email, password) VALUES (?, ?, ?)";
         String username = user.username();
         String email = user.email();
         String password = hashUserPassword(user.password());

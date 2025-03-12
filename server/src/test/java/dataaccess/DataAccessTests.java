@@ -147,6 +147,18 @@ public class DataAccessTests {
         assertNotNull(authDatabase.getAuth(authData.authToken()));
     }
 
+    @Test
+    public void createGameTest() throws Exception{
+        GameDatabase gameDatabase = new GameDatabase();
+
+        var gameData = gameDatabase.createGameData("game1");
+
+        var actualGame = gameDatabase.getGame(gameData.gameID());
+
+        assertEquals(gameData, actualGame);
+
+    }
+
 }
 
 

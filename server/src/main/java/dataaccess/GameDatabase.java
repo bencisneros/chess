@@ -1,10 +1,14 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.util.HashMap;
 
 public class GameDatabase implements GameDAO{
+
+    private static int gameId = 0;
 
     private final DatabaseManager databaseManager;
 
@@ -14,12 +18,20 @@ public class GameDatabase implements GameDAO{
     }
 
     public void clearGameData() throws Exception {
-        String statement = "TRUNCATE gamedata";
+        String statement = "TRUNCATE gameData";
         databaseManager.executeUpdate(statement);
     }
 
     public GameData createGameData(String gameName) throws Exception {
-        return null;
+        gameId++;
+        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+        String whiteUsername = "";
+        String blackUsername = "";
+        ChessGame chessGame = new ChessGame();
+        String gsonGame = new Gson().toJson(chessGame);
+        int size = gsonGame.length();
+        databaseManager.executeUpdate(statement, gameId, whiteUsername, blackUsername, gameName, gsonGame);
+        return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame);
     }
 
     public GameData getGame(int gameID) throws Exception {

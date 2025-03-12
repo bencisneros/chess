@@ -92,11 +92,11 @@ public class DatabaseManager {
     private final String[] createStatement2 = {
             """
             CREATE TABLE IF NOT EXISTS  gameData (
-              `gameID` int NOT NULL AUTO_INCREMENT,
+              `gameID` int NOT NULL,
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
               `gameName` varchar(256) NOT NULL,
-              `game` varchar(256) NOT NULL,
+              `game` varchar(2000) NOT NULL,
               PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
