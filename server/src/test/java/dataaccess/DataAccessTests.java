@@ -9,6 +9,7 @@ import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import service.ClearService;
 import service.CreateGameService;
+import service.JoinGameService;
 import service.RegisterService;
 
 import java.util.Objects;
@@ -166,6 +167,27 @@ public class DataAccessTests {
         gameDatabase.createGameData("game1");
         assertThrows(Exception.class, () -> {
             createGameService.createGame("game1", "badToken");
+        });
+    }
+
+    @Test
+    public void updateGameTest() throws Exception{
+        GameDatabase gameDatabase = new GameDatabase();
+        var gameData = gameDatabase.createGameData("game1");
+        String whiteUsername = "username";
+        gameDatabase.updateGame("WHITE", whiteUsername, gameData);
+        var newGameData = gameDatabase.getGame(1);
+
+        assertEquals(whiteUsername, newGameData.whiteUsername());
+    }
+
+    @Test
+    public void badUpdateGameTest() throws Exception{
+
+        GameDatabase gameDatabase = new GameDatabase();
+        var gameData = gameDatabase.createGameData("game1");
+        assertThrows(Exception.class, () -> {
+            gameDatabase.updateGame("not a color", "", gameData);
         });
     }
 
