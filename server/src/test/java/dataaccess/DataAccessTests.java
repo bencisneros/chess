@@ -183,7 +183,6 @@ public class DataAccessTests {
 
     @Test
     public void badUpdateGameTest() throws Exception{
-
         GameDatabase gameDatabase = new GameDatabase();
         var gameData = gameDatabase.createGameData("game1");
         assertThrows(Exception.class, () -> {

@@ -7,6 +7,7 @@ import model.GameData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GameDatabase implements GameDAO{
 
@@ -63,7 +64,23 @@ public class GameDatabase implements GameDAO{
     }
 
     public void updateGame(String playerColor, String username, GameData gameData) throws Exception {
-
+        if(Objects.equals(playerColor, "WHITE")) {
+            if(!Objects.equals(gameData.whiteUsername(), "")){
+                throw new AlreadyTaken("403 Error: already taken");
+            }
+            String statement = "UPDATE gameData SET whiteUsername =? WHERE gameID =?";
+            databaseManager.executeUpdate(statement, username, gameData.gameID());
+        }
+        else if(Objects.equals(playerColor, "BLACK")){
+            if(!Objects.equals(gameData.blackUsername(), "")){
+                throw new AlreadyTaken("403 Error: already taken");
+            }
+            String statement = "UPDATE gameData SET blackUsername =? WHERE gameID =?";
+            databaseManager.executeUpdate(statement, username, gameData.gameID());
+        }
+        else{
+            throw new DataAccessException("400 Error: bad request");
+        }
     }
 
     public HashMap<Integer, GameData> getGameMap() {
