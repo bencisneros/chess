@@ -114,6 +114,39 @@ public class DataAccessTests {
         assertNotEquals(authData, authDatabase.getAuth(authData.authToken() + " "));
     }
 
+    @Test
+    public void deleteAuthTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        RegisterService registerService = new RegisterService();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        var authData = registerService.register(user);
+        authDatabase.deleteAuth(authData);
+
+        assertNull(authDatabase.getAuth(authData.authToken()));
+    }
+
+    @Test
+    public void badDeleteAuthTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        RegisterService registerService = new RegisterService();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        var authData = registerService.register(user);
+        var fakeAuthData = new AuthData("token", username);
+        authDatabase.deleteAuth(fakeAuthData);
+
+        assertNotNull(authDatabase.getAuth(authData.authToken()));
+    }
+
 }
 
 

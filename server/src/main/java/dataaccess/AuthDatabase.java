@@ -27,8 +27,10 @@ public class AuthDatabase implements AuthDAO{
         return new AuthData(authToken, username);
     }
 
-    public void deleteAuth(AuthData authData) {
-
+    public void deleteAuth(AuthData authData) throws Exception {
+        String authToken = authData.authToken();
+        var statement = "DELETE FROM authData WHERE authToken=?";
+        databaseManager.executeUpdate(statement, authToken);
     }
 
     public AuthData getAuth(String authToken) throws Exception {
