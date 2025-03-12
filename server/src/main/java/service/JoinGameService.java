@@ -17,6 +17,9 @@ public class JoinGameService {
         }
 
         var gameData = gameDAO.getGame(gameID);
+        if(gameData == null){
+            throw new DataAccessException("400 Error: unauthorized");
+        }
         gameDAO.updateGame(playerColor, authData.username(), gameData);
     }
 

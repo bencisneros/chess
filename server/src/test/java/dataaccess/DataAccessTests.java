@@ -201,9 +201,9 @@ public class DataAccessTests {
         GameData gameData2 = new GameData(temp2.gameID(), "", "", "game3", new ChessGame());
 
         var map = new HashMap<Integer, GameData>();
-        map.put(1, gameData);
-        map.put(2, gameData1);
-        map.put(3, gameData2);
+        map.put(temp.gameID(), gameData);
+        map.put(temp1.gameID(), gameData1);
+        map.put(temp2.gameID(), gameData2);
 
         assertEquals(map, gameDatabase.getGameMap());
     }
