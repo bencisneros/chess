@@ -50,7 +50,7 @@ public class UserDatabase implements UserDAO{
 
 
     public void clearUserData() throws Exception {
-        String statement = "TRUNCATE userdata";
+        String statement = "TRUNCATE userData";
         databaseManager.executeUpdate(statement);
     }
 
