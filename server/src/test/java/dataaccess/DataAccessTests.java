@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import service.ClearService;
+import service.RegisterService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,6 +82,35 @@ public class DataAccessTests {
         assertFalse(userDatabase.checkPassword("hello", actual.password()));
     }
 
+    @Test
+    public void getAuthTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        RegisterService registerService = new RegisterService();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        var authData = registerService.register(user);
+
+        assertTrue(authData == authDatabase.getAuth(authData.authToken()));
+    }
+
+    @Test
+    public void badGetAuthTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        RegisterService registerService = new RegisterService();
+
+        String username = "bencisneros";
+        String email = "email";
+        String password = "password";
+        var user = new UserData(username, email, password);
+
+        var authData = registerService.register(user);
+
+        assertNotEquals(authData, authDatabase.getAuth(authData.authToken() + " "));
+    }
 
 }
 
