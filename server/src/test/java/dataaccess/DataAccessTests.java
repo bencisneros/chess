@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import service.ClearService;
+import service.CreateGameService;
 import service.RegisterService;
 
 import java.util.Objects;
@@ -156,7 +157,16 @@ public class DataAccessTests {
         var actualGame = gameDatabase.getGame(gameData.gameID());
 
         assertEquals(gameData, actualGame);
+    }
 
+    @Test
+    public void badCreationTest() throws Exception{
+        CreateGameService createGameService = new CreateGameService();
+        GameDAO gameDatabase = new GameDatabase();
+        gameDatabase.createGameData("game1");
+        assertThrows(Exception.class, () -> {
+            createGameService.createGame("game1", "badToken");
+        });
     }
 
 }
