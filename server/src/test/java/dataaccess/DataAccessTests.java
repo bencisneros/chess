@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import dataaccess.AuthDataAccessMemory;
 import dataaccess.GameDataAccessMemory;
 import dataaccess.UserDataAccessMemory;
@@ -7,11 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
-import service.ClearService;
-import service.CreateGameService;
-import service.JoinGameService;
-import service.RegisterService;
+import service.*;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -187,6 +186,32 @@ public class DataAccessTests {
         var gameData = gameDatabase.createGameData("game1");
         assertThrows(Exception.class, () -> {
             gameDatabase.updateGame("not a color", "", gameData);
+        });
+    }
+
+    @Test
+    public void listGamesTest() throws Exception{
+        GameDatabase gameDatabase = new GameDatabase();
+        gameDatabase.createGameData("game1");
+        gameDatabase.createGameData("game2");
+        gameDatabase.createGameData("game3");
+
+        GameData gameData = new GameData(1, "", "", "game1", new ChessGame());
+        GameData gameData1 = new GameData(2, "", "", "game2", new ChessGame());
+        GameData gameData2 = new GameData(3, "", "", "game3", new ChessGame());
+
+        var map = new HashMap<Integer, GameData>();
+        map.put(1, gameData);
+        map.put(2, gameData1);
+        map.put(3, gameData2);
+
+        assertEquals(map, gameDatabase.getGameMap());
+    }
+
+    public void badListGamesTest() throws Exception{
+        ListGamesService listGamesService = new ListGamesService();
+        assertThrows(Exception.class, () -> {
+            listGamesService.listGames("bad token");
         });
     }
 
