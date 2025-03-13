@@ -9,9 +9,9 @@ public class ClearService {
     private final UserDAO userDataAccessMemory;
 
     public ClearService() throws Exception{
-        authDataAccessMemory = new AuthDatabase(); // new AuthDataAccessMemory();
-        gameDataAccessMemory = new GameDatabase(); // new GameDataAccessMemory();
-        userDataAccessMemory = new UserDatabase(); // new UserDataAccessMemory();
+        authDataAccessMemory = new AuthDatabase();
+        gameDataAccessMemory = new GameDatabase();
+        userDataAccessMemory = new UserDatabase();
 
     }
     public void clear() throws Exception{

@@ -56,6 +56,38 @@ public class DataAccessTests {
     }
 
     @Test
+    public void getUserTest() throws Exception{
+        UserDatabase userDatabase = new UserDatabase();
+        String username = "username";
+        String email = "byu.edu";
+        String password = "cougs";
+        var user = new UserData(username, email, password);
+        userDatabase.createUser(user);
+
+        var actual = userDatabase.getUser(user);
+        assertEquals(username, actual.username());
+        assertEquals(email, actual.email());
+        assertNotEquals(password, actual.password());
+    }
+
+    @Test
+    public void badGetUserTest() throws Exception{
+        UserDatabase userDatabase = new UserDatabase();
+        String username = "username";
+        String email = "byu.edu";
+        String password = "cougs";
+        var user = new UserData(username, email, password);
+        userDatabase.createUser(user);
+
+        var fakeUser = new UserData("not a real username", email, password);
+
+        assertNull(userDatabase.getUser(fakeUser));
+    }
+
+
+
+
+    @Test
     public void checkPasswordTest() throws Exception{
         UserDatabase userDatabase = new UserDatabase();
 
@@ -83,6 +115,26 @@ public class DataAccessTests {
         var actual = userDatabase.getUser(user);
 
         assertFalse(userDatabase.checkPassword("hello", actual.password()));
+    }
+
+    @Test
+    public void createAuthTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        UserData user = new UserData("ben", "byu.edu", "word");
+        var authData = authDatabase.createAuthData(user);
+        assertEquals(authDatabase.getAuth(authData.authToken()), authData);
+    }
+
+    @Test
+    public void badCreateAuthTest() throws Exception{
+        RegisterService registerService = new RegisterService();
+        UserData user = new UserData("ben", "byu.edu", "word");
+        registerService.register(user);
+
+
+        assertThrows(Exception.class, () -> {
+            registerService.register(user);
+        });
     }
 
     @Test
@@ -170,6 +222,20 @@ public class DataAccessTests {
     }
 
     @Test
+    public void getGameTest() throws Exception{
+        GameDAO gameDatabase = new GameDatabase();
+        var game = gameDatabase.createGameData("game1");
+        assertEquals(game, gameDatabase.getGame(game.gameID()));
+    }
+
+    @Test
+    public void badGetGameTest() throws Exception{
+        GameDAO gameDatabase = new GameDatabase();
+        gameDatabase.createGameData("game1");
+        assertNull(gameDatabase.getGame(0));
+    }
+
+    @Test
     public void updateGameTest() throws Exception{
         GameDatabase gameDatabase = new GameDatabase();
         var gameData = gameDatabase.createGameData("game1");
@@ -208,12 +274,40 @@ public class DataAccessTests {
         assertEquals(map, gameDatabase.getGameMap());
     }
 
+    @Test
     public void badListGamesTest() throws Exception{
         ListGamesService listGamesService = new ListGamesService();
         assertThrows(Exception.class, () -> {
             listGamesService.listGames("bad token");
         });
     }
+
+    @Test
+    public void clearAuthDataTest() throws Exception{
+        AuthDatabase authDatabase = new AuthDatabase();
+        var authData = authDatabase.createAuthData(new UserData("username", "email", "password"));
+        authDatabase.clearAuthData();
+        assertNull(authDatabase.getAuth(authData.authToken()));
+    }
+
+    @Test
+    public void clearGameDataTest() throws Exception{
+        GameDatabase gameDatabase = new GameDatabase();
+        var game = gameDatabase.createGameData("game");
+        gameDatabase.clearGameData();
+        assertNull(gameDatabase.getGame(game.gameID()));
+    }
+
+    @Test
+    public void clearUserDataTest() throws Exception{
+        UserDatabase userDatabase = new UserDatabase();
+        UserData user = new UserData("username", "email", "password");
+        userDatabase.createUser(user);
+        userDatabase.clearUserData();
+        assertNull(userDatabase.getUser(user));
+    }
+
+
 
 }
 

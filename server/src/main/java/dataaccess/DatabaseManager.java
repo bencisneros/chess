@@ -120,12 +120,12 @@ public class DatabaseManager {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof UserData u) ps.setString(i + 1, u.toString());
-                    else if (param instanceof GameData g) ps.setString(i + 1, g.toString());
-                    else if (param instanceof AuthData a) ps.setString(i + 1, a.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
+                    else if (param instanceof UserData u) {ps.setString(i + 1, u.toString());}
+                    else if (param instanceof GameData g) {ps.setString(i + 1, g.toString());}
+                    else if (param instanceof AuthData a) {ps.setString(i + 1, a.toString());}
+                    else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
 
@@ -142,14 +142,14 @@ public class DatabaseManager {
     }
 
     public void configureDatabase() throws Exception {
-        ArrayList<String[]> CREATE_STATEMENTS = new ArrayList<>();
-        CREATE_STATEMENTS.add(createStatement1);
-        CREATE_STATEMENTS.add(createStatement2);
-        CREATE_STATEMENTS.add(createStatement3);
+        ArrayList<String[]> createStatements = new ArrayList<>();
+        createStatements.add(createStatement1);
+        createStatements.add(createStatement2);
+        createStatements.add(createStatement3);
         createDatabase();
-        for(var createStatements : CREATE_STATEMENTS) {
+        for(var statements : createStatements) {
             try (var conn = DatabaseManager.getConnection()) {
-                for (var statement : createStatements) {
+                for (var statement : statements) {
                     try (var preparedStatement = conn.prepareStatement(statement)) {
                         preparedStatement.executeUpdate();
                     }
