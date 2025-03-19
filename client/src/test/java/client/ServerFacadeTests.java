@@ -1,6 +1,7 @@
 package client;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -105,6 +106,30 @@ public class ServerFacadeTests {
         var fakeAuth = new AuthData("bad auth token", username);
         assertThrows(Exception.class, () -> {
             serverFacade.logout(fakeAuth);
+        });
+    }
+
+    @Test
+    public void createGameTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        var authData = serverFacade.register(user);
+        GameData gameData = serverFacade.createGame(authData, "game");
+        assertTrue(gameData.gameID() > 0);
+    }
+
+    @Test
+    public void badCreateGameTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        serverFacade.register(user);
+        var fakeAuth = new AuthData("bad auth token", username);
+        assertThrows(Exception.class, () -> {
+            serverFacade.createGame(fakeAuth, "game");
         });
     }
 }

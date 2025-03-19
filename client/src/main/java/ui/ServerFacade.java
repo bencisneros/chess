@@ -2,6 +2,7 @@ package ui;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 
 public class ServerFacade {
 
@@ -35,8 +37,11 @@ public class ServerFacade {
         makeRequest("DELETE", path, authData.authToken(), null, null);
     }
 
-    public void createGame(){
-
+    public GameData createGame(AuthData authData, String gameName) throws Exception{
+        String path = "/game";
+        HashMap<String, String> gameRequest = new HashMap<>();
+        gameRequest.put("gameName", gameName);
+        return makeRequest("POST", path, authData.authToken(), gameRequest, GameData.class);
     }
 
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
@@ -46,7 +51,7 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(true);
             if(header != null) {
-                http.setRequestProperty("authorization", header);
+                http.setRequestProperty("Authorization", header);
             }
             writeBody(request, http);
             http.connect();
