@@ -20,18 +20,34 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public AuthData register(UserData userData) throws ResponseException {
+    public AuthData register(UserData userData) throws Exception {
         String path = "/user";
-        return makeRequest("POST", path, userData, AuthData.class);
+        return makeRequest("POST", path, null, userData, AuthData.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public AuthData login(UserData userData) throws Exception{
+        String path = "/session";
+        return makeRequest("POST", path, null, userData, AuthData.class);
+    }
+
+    public void logout(AuthData authData) throws Exception{
+        String path = "/session";
+        makeRequest("DELETE", path, authData.authToken(), null, null);
+    }
+
+    public void createGame(){
+
+    }
+
+    private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            if(header != null) {
+                http.setRequestProperty("authorization", header);
+            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

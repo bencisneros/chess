@@ -37,21 +37,19 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void testFacadeRegister() throws ResponseException {
+    public void testFacadeRegister() throws Exception {
 
         String username = "username";
         String email = "email";
         String password = "password";
         UserData user = new UserData(username, email, password);
-
         AuthData authData = serverFacade.register(user);
         assertEquals(username, authData.username());
         assertTrue(authData.authToken().length() > 10);
     }
 
     @Test
-    public void badRegisterTest() throws ResponseException {
-
+    public void badRegisterTest() throws Exception {
         String username = "username";
         String email = "email";
         String password = "password";
@@ -62,4 +60,51 @@ public class ServerFacadeTests {
         });
     }
 
+    @Test
+    public void loginTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        serverFacade.register(user);
+        AuthData authData = serverFacade.login(user);
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    public void badLoginTest(){
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        assertThrows(Exception.class, () -> {
+            serverFacade.login(user);
+        });
+    }
+
+    @Test
+    public void logoutTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        AuthData authData = serverFacade.register(user);
+        serverFacade.logout(authData);
+        assertThrows(Exception.class, () -> {
+            serverFacade.logout(authData);
+        });
+    }
+
+    @Test
+    public void badLogoutTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        serverFacade.register(user);
+        var fakeAuth = new AuthData("bad auth token", username);
+        assertThrows(Exception.class, () -> {
+            serverFacade.logout(fakeAuth);
+        });
+    }
 }
