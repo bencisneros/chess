@@ -2,6 +2,7 @@ package client;
 
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.ClearService;
 
 
 public class ServerFacadeTests {
@@ -11,8 +12,14 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8080);
         System.out.println("Started test HTTP server on " + port);
+    }
+
+    @BeforeEach
+    public void clear() throws Exception{
+        ClearService clearService = new ClearService();
+        clearService.clear();
     }
 
     @AfterAll
