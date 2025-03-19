@@ -132,4 +132,35 @@ public class ServerFacadeTests {
             serverFacade.createGame(fakeAuth, "game");
         });
     }
+
+    @Test
+    public void listGamesTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        AuthData authData = serverFacade.register(user);
+        serverFacade.createGame(authData, "game1");
+        serverFacade.createGame(authData, "game2");
+        serverFacade.createGame(authData, "game3");
+        var list = serverFacade.listGames(authData);
+
+        assertEquals(3, list.length);
+    }
+
+    @Test
+    public void badListGamesTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        AuthData authData = serverFacade.register(user);
+        serverFacade.createGame(authData, "game1");
+        serverFacade.createGame(authData, "game2");
+        serverFacade.createGame(authData, "game3");
+        var fakeAuth = new AuthData("bad auth token", username);
+        assertThrows(Exception.class, () -> {
+            serverFacade.listGames(fakeAuth);
+        });
+    }
 }

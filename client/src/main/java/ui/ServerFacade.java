@@ -17,6 +17,7 @@ import java.util.HashMap;
 public class ServerFacade {
 
     private final String serverUrl;
+    public record GameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -42,6 +43,13 @@ public class ServerFacade {
         HashMap<String, String> gameRequest = new HashMap<>();
         gameRequest.put("gameName", gameName);
         return makeRequest("POST", path, authData.authToken(), gameRequest, GameData.class);
+    }
+
+    public GameInfo[] listGames(AuthData authData)throws Exception{
+        String path = "/game";
+        record GameList(GameInfo[] games){}
+        var gameList = makeRequest("GET", path, authData.authToken(), null, GameList.class);
+        return gameList.games;
     }
 
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
