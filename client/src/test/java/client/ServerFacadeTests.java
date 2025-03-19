@@ -163,4 +163,30 @@ public class ServerFacadeTests {
             serverFacade.listGames(fakeAuth);
         });
     }
+
+    @Test
+    public void joinGameTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        AuthData authData = serverFacade.register(user);
+        var game = serverFacade.createGame(authData, "game1");
+        serverFacade.joinGame(authData, "WHITE", game.gameID());
+        var list = serverFacade.listGames(authData);
+        assertEquals("username", list[0].whiteUsername());
+    }
+
+    @Test
+    public void badJoinGameTest() throws Exception{
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        AuthData authData = serverFacade.register(user);
+        var gameData = serverFacade.createGame(authData, "game1");
+        assertThrows(Exception.class, () -> {
+            serverFacade.joinGame(authData, "NOT A COLOR", gameData.gameID());
+        });
+    }
 }
