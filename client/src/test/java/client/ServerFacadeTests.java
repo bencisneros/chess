@@ -1,13 +1,20 @@
 package client;
 
+import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import service.ClearService;
+import ui.ResponseException;
+import ui.ServerFacade;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
+    private ServerFacade serverFacade;
+    private final String SERVER_URL = "http://localhost:8080";
 
     @BeforeAll
     public static void init() {
@@ -20,6 +27,7 @@ public class ServerFacadeTests {
     public void clear() throws Exception{
         ClearService clearService = new ClearService();
         clearService.clear();
+        serverFacade = new ServerFacade(SERVER_URL);
     }
 
     @AfterAll
@@ -29,8 +37,29 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    public void testFacadeRegister() throws ResponseException {
+
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+
+        AuthData authData = serverFacade.register(user);
+        assertEquals(username, authData.username());
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    public void badRegisterTest() throws ResponseException {
+
+        String username = "username";
+        String email = "email";
+        String password = "password";
+        UserData user = new UserData(username, email, password);
+        serverFacade.register(user);
+        assertThrows(Exception.class, () -> {
+            serverFacade.register(user);
+        });
     }
 
 }
