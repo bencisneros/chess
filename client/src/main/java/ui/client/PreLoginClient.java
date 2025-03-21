@@ -50,8 +50,18 @@ public class PreLoginClient {
         return "Signed in as " + username;
     }
 
-    private String signIn(String[] params) {
-        return "";
+    private String signIn(String[] params) throws Exception{
+        if (params.length != 2){
+            throw new Exception("expected: <username> <password>");
+        }
+        String username = params[0];
+        String password = params[1];
+
+        UserData user = new UserData(username, null, password);
+
+        server.login(user);
+
+        return "Signed in as " + username;
     }
 
 }
