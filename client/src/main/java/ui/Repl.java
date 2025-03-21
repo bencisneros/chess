@@ -32,8 +32,9 @@ public class Repl {
                 try {
                     result = preLoginClient.eval(line);
                     System.out.print(SET_TEXT_COLOR_LIGHT_GREY + result);
-                    if(Objects.equals(line.split(" ")[0], "register") || Objects.equals(line.split(" ")[0], "login")){
+                    if(Objects.equals(result.split(" ")[0], "Signed")){
                         state = 1;
+                        postLoginClient.setAuthData(preLoginClient.getAuthData());
                     }
                 } catch (Throwable e) {
                     var msg = e.toString();

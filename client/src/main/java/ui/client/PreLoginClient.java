@@ -2,12 +2,14 @@ package ui.client;
 
 import java.util.Arrays;
 
+import model.AuthData;
 import model.UserData;
 import ui.ServerFacade;
 
 public class PreLoginClient {
 
     private final ServerFacade server;
+    private AuthData authData = null;
 
     public PreLoginClient(String serverUrl){
         server = new ServerFacade(serverUrl);
@@ -45,7 +47,7 @@ public class PreLoginClient {
 
         UserData user = new UserData(username, email, password);
 
-        server.register(user);
+        authData = server.register(user);
 
         return "Signed in as " + username;
     }
@@ -64,4 +66,7 @@ public class PreLoginClient {
         return "Signed in as " + username;
     }
 
+    public AuthData getAuthData() {
+        return authData;
+    }
 }
