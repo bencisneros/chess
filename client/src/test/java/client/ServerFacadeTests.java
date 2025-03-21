@@ -6,7 +6,6 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import service.ClearService;
-import ui.ResponseException;
 import ui.ServerFacade;
 import static org.junit.jupiter.api.Assertions.*;
 
