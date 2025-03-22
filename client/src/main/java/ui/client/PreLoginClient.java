@@ -29,7 +29,8 @@ public class PreLoginClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
-                case "signIn" -> signIn(params);
+                case "signin" -> signIn(params);
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (Exception ex) {
@@ -61,7 +62,7 @@ public class PreLoginClient {
 
         UserData user = new UserData(username, null, password);
 
-        server.login(user);
+        authData = server.login(user);
 
         return "Signed in as " + username;
     }

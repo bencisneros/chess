@@ -31,7 +31,7 @@ public class Repl {
             if (state == 0) {
                 try {
                     result = preLoginClient.eval(line);
-                    System.out.print(SET_TEXT_COLOR_LIGHT_GREY + result);
+                    System.out.print(SET_TEXT_COLOR_YELLOW + result);
                     if(Objects.equals(result.split(" ")[0], "Signed")){
                         state = 1;
                         postLoginClient.setAuthData(preLoginClient.getAuthData());
@@ -45,8 +45,8 @@ public class Repl {
             else if (state == 1){
                 try{
                     result = postLoginClient.eval(line);
-                    System.out.print(SET_TEXT_COLOR_LIGHT_GREY + result);
-                    if(Objects.equals(line.split(" ")[0], "join") || Objects.equals(line.split(" ")[0], "observe")){
+                    System.out.print(SET_TEXT_COLOR_YELLOW + result);
+                    if(false){
                         state = 2;
                     }
                     else if (Objects.equals(line.split(" ")[0], "logout")){

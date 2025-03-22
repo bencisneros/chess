@@ -54,7 +54,7 @@ public class ServerFacade {
 
     public void joinGame(AuthData authData, String playerColor, int gameId) throws Exception{
         record JoinGameData(String playerColor, int gameID){}
-        JoinGameData joinRequest = new JoinGameData(playerColor, gameId);
+        JoinGameData joinRequest = new JoinGameData(playerColor.toUpperCase(), gameId);
         String path = "/game";
         makeRequest("PUT", path, authData.authToken(), joinRequest, null);
     }
