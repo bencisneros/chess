@@ -14,7 +14,7 @@ public class ServerFacadeTests {
 
     private static Server server;
     private ServerFacade serverFacade;
-    private final String SERVER_URL = "http://localhost:8080";
+    private static final String SERVER_URL = "http://localhost:8080";
 
     @BeforeAll
     public static void init() {

@@ -235,12 +235,7 @@ public class PostLoginClient {
 
     private String printStartWhite(String rowNum){
         return  SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " " + rowNum + " " + SET_TEXT_COLOR_BLUE +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
+                printFiveRows() +
                 SET_BG_COLOR_WHITE + "   " +
                 SET_BG_COLOR_BLACK + "   " +
                 SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " " + rowNum + " " + RESET_BG_COLOR + "\n";
@@ -249,14 +244,18 @@ public class PostLoginClient {
     private String printStartBlack(String rowNum){
         return  SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " " + rowNum + " " + SET_TEXT_COLOR_BLUE +
                 SET_BG_COLOR_BLACK + "   " +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
-                SET_BG_COLOR_WHITE + "   " +
-                SET_BG_COLOR_BLACK + "   " +
+                printFiveRows() +
                 SET_BG_COLOR_WHITE + "   " +
                 SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " " + rowNum + " " + RESET_BG_COLOR + "\n";
+    }
+
+    private String printFiveRows(){
+        return  SET_BG_COLOR_WHITE + "   " +
+                SET_BG_COLOR_BLACK + "   " +
+                SET_BG_COLOR_WHITE + "   " +
+                SET_BG_COLOR_BLACK + "   " +
+                SET_BG_COLOR_WHITE + "   " +
+                SET_BG_COLOR_BLACK + "   " ;
     }
 
 
