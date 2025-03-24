@@ -24,13 +24,21 @@ public class ServerFacade {
     }
 
     public AuthData register(UserData userData) throws Exception {
-        String path = "/user";
-        return makeRequest("POST", path, null, userData, AuthData.class);
+        try {
+            String path = "/user";
+            return makeRequest("POST", path, null, userData, AuthData.class);
+        } catch (ResponseException e) {
+            throw new Exception("username already taken");
+        }
     }
 
     public AuthData login(UserData userData) throws Exception{
-        String path = "/session";
-        return makeRequest("POST", path, null, userData, AuthData.class);
+        try {
+            String path = "/session";
+            return makeRequest("POST", path, null, userData, AuthData.class);
+        } catch (ResponseException e) {
+            throw new Exception("incorrect username or password");
+        }
     }
 
     public void logout(AuthData authData) throws Exception{

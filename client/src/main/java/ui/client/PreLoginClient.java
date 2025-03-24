@@ -1,7 +1,7 @@
 package ui.client;
 
 import java.util.Arrays;
-
+import static ui.EscapeSequences.*;
 import model.AuthData;
 import model.UserData;
 import ui.ServerFacade;
@@ -19,7 +19,7 @@ public class PreLoginClient {
         return "register: <username> <email> <password>\n" +
                 "signIn: <username> <password>\n" +
                 "quit\n" +
-                "help\n";
+                "help";
     }
 
     public String eval(String line) {
@@ -40,7 +40,7 @@ public class PreLoginClient {
 
     private String register(String[] params) throws Exception{
         if(params.length != 3){
-            throw new Exception("expected: <username> <email> <password>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <username> <email> <password>");
         }
         String username = params[0];
         String email = params[1];
@@ -55,7 +55,7 @@ public class PreLoginClient {
 
     private String signIn(String[] params) throws Exception{
         if (params.length != 2){
-            throw new Exception("expected: <username> <password>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <username> <password>");
         }
         String username = params[0];
         String password = params[1];

@@ -35,6 +35,7 @@ public class Repl {
                     if(Objects.equals(result.split(" ")[0], "Signed")){
                         state = 1;
                         postLoginClient.setAuthData(preLoginClient.getAuthData());
+                        gameplayClient.setAuthData(preLoginClient.getAuthData());
                     }
                 } catch (Throwable e) {
                     var msg = e.toString();
@@ -46,10 +47,10 @@ public class Repl {
                 try{
                     result = postLoginClient.eval(line);
                     System.out.print(SET_TEXT_COLOR_YELLOW + result);
-                    if(false){
+                    if(Objects.equals(result.split(" ")[0], "joining")){
                         state = 2;
                     }
-                    else if (Objects.equals(line.split(" ")[0], "logout")){
+                    else if (Objects.equals(result.split(" ")[0], "logged")){
                         state = 0;
                     }
                 } catch (Throwable e) {
@@ -62,7 +63,10 @@ public class Repl {
                 try{
                     result = gameplayClient.eval(line);
                     System.out.print(SET_TEXT_COLOR_LIGHT_GREY + result);
-                    if(Objects.equals(line.split(" ")[0], "logout")){
+                    if(Objects.equals(result.split(" ")[0], "leaving")){
+                        state = 1;
+                    }
+                    else if(Objects.equals(result.split(" ")[0], "logged")){
                         state = 0;
                     }
                 } catch (Throwable e) {

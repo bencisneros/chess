@@ -28,7 +28,7 @@ public class PostLoginClient {
                 "observe: <ID>\n" +
                 "logout\n" +
                 "quit\n" +
-                "help\n";
+                "help";
     }
 
     public String eval(String line) {
@@ -51,7 +51,7 @@ public class PostLoginClient {
 
     private String create(String[] params) throws Exception{
         if(params.length != 1){
-            throw new Exception("expected: <name>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <name>");
         }
 
         String gameName = params[0];
@@ -76,32 +76,40 @@ public class PostLoginClient {
 
     private String join(String[] params) throws Exception{
         if(params.length != 2){
-            throw new Exception("expected: <ID> <WHITE/BLACK>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <ID> <WHITE/BLACK>");
         }
 
         int userId = 0;
         try{
             userId = Integer.parseInt(params[0]);
         } catch (Exception e) {
-            throw new Exception("expected: <ID> <WHITE/BLACK>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <ID> <WHITE/BLACK>");
         }
 
 
         GameInfo[] list = server.listGames(authData);
 
+        if(list.length < userId){
+            throw new Exception(SET_TEXT_COLOR_RED + "enter valid index");
+        }
+
         int gameId = list[userId - 1].gameID();
         String color = params[1];
 
         if(!Objects.equals(color, "white") && !Objects.equals(color, "black")){
-            throw new Exception("expected: <ID> <WHITE/BLACK>");
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <ID> <WHITE/BLACK>");
+        }
+        try {
+            server.joinGame(authData, color, gameId);
+        } catch (Exception e) {
+            throw new Exception(SET_TEXT_COLOR_RED + "pick valid color");
         }
 
-        server.joinGame(authData, color, gameId);
         if(color.equals("white")) {
-            return printWhiteBoard();
+            return "joining game " + userId + "\n" + printWhiteBoard();
         }
         else{
-            return printBlackBoard();
+            return "joining game " + userId + "\n" + printBlackBoard();
         }
     }
 
@@ -253,11 +261,19 @@ public class PostLoginClient {
 
 
 
-    private String observe(String[] params) {
-        return null;
+    private String observe(String[] params) throws Exception{
+        int userId = 0;
+        try{
+            userId = Integer.parseInt(params[0]);
+        } catch (Exception e) {
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <ID>");
+        }
+        return printWhiteBoard();
+
     }
 
-    private String logout() {
-        return "";
+    private String logout() throws Exception {
+        server.logout(authData);
+        return "logged out";
     }
 }
