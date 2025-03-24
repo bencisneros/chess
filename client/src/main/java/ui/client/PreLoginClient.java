@@ -34,7 +34,7 @@ public class PreLoginClient {
                 default -> help();
             };
         } catch (Exception ex) {
-            return ex.getMessage();
+            return SET_TEXT_COLOR_RED + ex.getMessage();
         }
     }
 
