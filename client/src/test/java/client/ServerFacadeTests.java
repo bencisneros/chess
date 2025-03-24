@@ -13,21 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServerFacadeTests {
 
     private static Server server;
-    private ServerFacade serverFacade;
-    private static final String SERVER_URL = "http://localhost:8080";
+    private static ServerFacade serverFacade;
+    private static final String SERVER_URL = "http://localhost:";
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
+        serverFacade = new ServerFacade(SERVER_URL + port);
     }
 
     @BeforeEach
     public void clear() throws Exception{
         ClearService clearService = new ClearService();
         clearService.clear();
-        serverFacade = new ServerFacade(SERVER_URL);
     }
 
     @AfterAll
