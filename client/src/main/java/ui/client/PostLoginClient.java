@@ -42,6 +42,7 @@ public class PostLoginClient {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "logout" -> logout();
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (Exception ex) {
@@ -261,13 +262,21 @@ public class PostLoginClient {
 
 
     private String observe(String[] params) throws Exception{
-        int userId = 0;
+
+        int userId;
         try{
             userId = Integer.parseInt(params[0]);
         } catch (Exception e) {
             throw new Exception(SET_TEXT_COLOR_RED + "expected: <ID>");
         }
-        return printWhiteBoard();
+
+        GameInfo[] list = server.listGames(authData);
+
+        if(list.length < userId){
+            throw new Exception(SET_TEXT_COLOR_RED + "enter valid index");
+        }
+
+        return "observing game " + userId + "\n" +  printWhiteBoard();
 
     }
 

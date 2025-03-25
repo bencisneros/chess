@@ -47,7 +47,7 @@ public class Repl {
                 try{
                     result = postLoginClient.eval(line);
                     System.out.print(SET_TEXT_COLOR_YELLOW + result);
-                    if(Objects.equals(result.split(" ")[0], "joining")){
+                    if(Objects.equals(result.split(" ")[0], "joining") || Objects.equals(result.split(" ")[0], "observing")){
                         state = 2;
                     }
                     else if (Objects.equals(result.split(" ")[0], "logged")){
