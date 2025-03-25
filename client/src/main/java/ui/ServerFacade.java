@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class ServerFacade {
 
     private final String serverUrl;
-    public record GameInfo(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+    public record GameInfo(int gameID, String whiteUsername, String blackUsername, String gameName, GameData gameData) {}
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
