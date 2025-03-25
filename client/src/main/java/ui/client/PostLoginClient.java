@@ -93,7 +93,7 @@ public class PostLoginClient {
 
         GameInfo[] list = server.listGames(authData);
 
-        if(list.length < userId){
+        if(list.length < userId || userId <= 0){
             throw new Exception(SET_TEXT_COLOR_RED + "enter valid index");
         }
 
@@ -112,52 +112,10 @@ public class PostLoginClient {
             throw new Exception(SET_TEXT_COLOR_RED + "pick valid color");
         }
 
-        if(color.equals("white")) {
-            return "joining game " + userId + "\n" + printWhiteBoard(game);
-        }
-        else{
-            return "joining game " + userId + "\n" + printBlackBoard(game);
-        }
+        return "joining game " + userId + "\n" + printBoard(game, color);
     }
 
-    private String printBlackBoard(ChessGame game){
-        var gameBoard = game.board.board;
-        String board = "";
-        board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
-        for(int i = 1; i < 9; i++){
-            for(int j = 0; j < 10; j++){
-                if(j == 0 || j == 9){
-                    switch (i){
-                        case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 1 "; break;
-                        case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 2 "; break;
-                        case 3: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 3 "; break;
-                        case 4: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 4 "; break;
-                        case 5: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 5 "; break;
-                        case 6: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 6 "; break;
-                        case 7: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
-                        case 8: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
-                    }
-                    if (j == 9){
-                        board += RESET_BG_COLOR + "\n";
-                    }
-                }
-                else{
-                    if((i + j) % 2 == 0){
-                        board += SET_BG_COLOR_WHITE + " " + getPiece(gameBoard, i, j, true) + " ";
-                    }
-                    else{
-                        board += SET_BG_COLOR_BLACK + " " + getPiece(gameBoard, i, j, true) + " ";
-                    }
-                }
-            }
-        }
-        board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
-
-
-        return board;
-    }
-
-    private String getPiece(ChessPiece[][] board, int i, int j, boolean reverse) {
+    private String getPiece(ChessPiece[][] board, int i, int j) {
         var piece = board[i][j];
         if(piece == null){
             return " ";
@@ -165,20 +123,10 @@ public class PostLoginClient {
 
         String color;
         if (piece.pieceColor == ChessGame.TeamColor.BLACK){
-            if(reverse) {
-                color = SET_TEXT_COLOR_BLUE;
-            }
-            else{
-                color = SET_TEXT_COLOR_RED;
-            }
+            color = SET_TEXT_COLOR_BLUE;
         }
         else{
-            if(reverse){
-                color = SET_TEXT_COLOR_RED;
-            }
-            else {
-                color = SET_TEXT_COLOR_BLUE;
-            }
+            color = SET_TEXT_COLOR_RED;
         }
 
 
@@ -205,14 +153,37 @@ public class PostLoginClient {
         return "";
     }
 
-    private String printWhiteBoard(ChessGame game) {
-        var gameBoard = game.board.board;
+    private ChessPiece[][] flipBoard(ChessPiece[][] board) {
+        int n = board.length - 1;
+        for (int i = 0; i < (n + 1) / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                ChessPiece temp = board[i][j];
+                board[i][j] = board[n - i][n - j];
+                board[n - i][n - j] = temp;
+            }
+        }
+        return board;
+    }
+
+    private String printBoard(ChessGame game, String color) {
+
+        ChessPiece[][] gameBoard;
         String board = "";
-        board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
+        if(Objects.equals(color, "white")) {
+            gameBoard = game.board.board;
+            board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
+        }
+        else{
+            gameBoard = flipBoard(game.board.board);
+            board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
+        }
+
+
         for(int i = 1; i < 9; i++){
             for(int j = 0; j < 10; j++){
                 if(j == 0 || j == 9){
-                    switch (i){
+                    if(Objects.equals(color, "white")){
+                        switch (i){
                         case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
                         case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
                         case 3: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 6 "; break;
@@ -221,6 +192,19 @@ public class PostLoginClient {
                         case 6: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 3 "; break;
                         case 7: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 2 "; break;
                         case 8: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 1 "; break;
+                        }
+                    }
+                    else{
+                        switch (i){
+                            case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 1 "; break;
+                            case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 2 "; break;
+                            case 3: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 3 "; break;
+                            case 4: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 4 "; break;
+                            case 5: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 5 "; break;
+                            case 6: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 6 "; break;
+                            case 7: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
+                            case 8: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
+                        }
                     }
                     if (j == 9){
                         board += RESET_BG_COLOR + "\n";
@@ -228,16 +212,20 @@ public class PostLoginClient {
                 }
                 else{
                     if((i + j) % 2 == 0){
-                        board += SET_BG_COLOR_WHITE + " " + getPiece(gameBoard, i, j, false) + " ";
+                        board += SET_BG_COLOR_WHITE + " " + getPiece(gameBoard, i, j) + " ";
                     }
                     else{
-                        board += SET_BG_COLOR_BLACK + " " + getPiece(gameBoard, i, j, false) + " ";
+                        board += SET_BG_COLOR_BLACK + " " + getPiece(gameBoard, i, j) + " ";
                     }
                 }
             }
         }
-        board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
-
+        if(Objects.equals(color, "white")) {
+            board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
+        }
+        else{
+            board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
+        }
 
         return board;
     }
@@ -254,13 +242,13 @@ public class PostLoginClient {
 
         GameInfo[] list = server.listGames(authData);
 
-        if(list.length < userId){
+        if(list.length < userId || userId <= 0){
             throw new Exception(SET_TEXT_COLOR_RED + "enter valid index");
         }
 
         var game = list[userId - 1].gameData().game();
 
-        return "observing game " + userId + "\n" +  printWhiteBoard(game);
+        return "observing game " + userId + "\n" +  printBoard(game, "white");
 
     }
 
