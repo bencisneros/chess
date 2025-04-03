@@ -11,14 +11,17 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import ui.ServerFacade.GameInfo;
+import ui.client.websocket.WebsocketFacade;
 
 public class PostLoginClient {
 
     private final ServerFacade server;
+    private final WebsocketFacade websocketFacade;
     private AuthData authData = null;
 
-    public PostLoginClient(String serverUrl) {
+    public PostLoginClient(String serverUrl) throws Exception {
         server = new ServerFacade(serverUrl);
+        websocketFacade = new WebsocketFacade(serverUrl);
     }
 
     public void setAuthData(AuthData authData) {

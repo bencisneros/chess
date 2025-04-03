@@ -1,18 +1,21 @@
 package ui;
 
 import ui.client.*;
+import ui.client.websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
+
 import static ui.EscapeSequences.*;
 
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
 
     private final GameplayClient gameplayClient;
     private final PostLoginClient postLoginClient;
     private final PreLoginClient preLoginClient;
 
-    public Repl(String serverUrl){
+    public Repl(String serverUrl) throws Exception {
         gameplayClient = new GameplayClient(serverUrl);
         postLoginClient = new PostLoginClient(serverUrl);
         preLoginClient = new PreLoginClient(serverUrl);
@@ -83,4 +86,9 @@ public class Repl {
         System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_BLUE);
     }
 
+    @Override
+    public void notify(ServerMessage notification) {
+        System.out.println(RED + notification.);
+        printPrompt();
+    }
 }

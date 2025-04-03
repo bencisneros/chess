@@ -7,6 +7,7 @@ import dataaccess.Unauthorized;
 import model.GameData;
 import model.UserData;
 import com.google.gson.Gson;
+import server.websocket.WebsocketHandler;
 import spark.*;
 import service.*;
 
@@ -21,8 +22,10 @@ public class Server {
     private final CreateGameService createGameService;
     private final ListGamesService listGamesService;
     private final JoinGameService joinGameService;
+    private final WebsocketHandler websocketHandler;
 
     public Server(){
+        websocketHandler = new WebsocketHandler();
         try {
             registerService = new RegisterService();
             clearService = new ClearService();
@@ -43,6 +46,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+
+        Spark.webSocket("/ws", websocketHandler);
+
         Spark.post("/user", this::handleRegister);
         Spark.delete("/db", this::handleClear);
         Spark.post("/session", this::handleLogin);
