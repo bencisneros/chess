@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import ui.ServerFacade.GameInfo;
+import ui.client.websocket.NotificationHandler;
 import ui.client.websocket.WebsocketFacade;
 
 public class PostLoginClient {
@@ -18,10 +19,12 @@ public class PostLoginClient {
     private final ServerFacade server;
     private final WebsocketFacade websocketFacade;
     private AuthData authData = null;
+    private final NotificationHandler notificationHandler;
 
-    public PostLoginClient(String serverUrl) throws Exception {
+    public PostLoginClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
         server = new ServerFacade(serverUrl);
-        websocketFacade = new WebsocketFacade(serverUrl);
+        this.notificationHandler = notificationHandler;
+        websocketFacade = new WebsocketFacade(serverUrl, notificationHandler);
     }
 
     public void setAuthData(AuthData authData) {
@@ -112,6 +115,7 @@ public class PostLoginClient {
         }
         try {
             server.joinGame(authData, color, gameId);
+            websocketFacade.joinGame(authData.username(), authData.authToken(), gameId);
         } catch (Exception e) {
             throw new Exception(SET_TEXT_COLOR_RED + "pick valid color");
         }

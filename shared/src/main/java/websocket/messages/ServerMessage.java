@@ -1,5 +1,8 @@
 package websocket.messages;
 
+import chess.ChessGame;
+
+import javax.management.remote.JMXServerErrorException;
 import java.util.Objects;
 
 /**
@@ -10,6 +13,7 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
+    private ChessGame game;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -17,8 +21,9 @@ public class ServerMessage {
         NOTIFICATION
     }
 
-    public ServerMessage(ServerMessageType type) {
+    public ServerMessage(ServerMessageType type, ChessGame game) {
         this.serverMessageType = type;
+        this.game = game;
     }
 
     public ServerMessageType getServerMessageType() {

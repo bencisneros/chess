@@ -1,5 +1,6 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -8,11 +9,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<Integer, Connection> connections = new ConcurrentHashMap<>();
 
-    public void add(String username, Session session) {
-        var connection = new Connection(username, session);
-        connections.put(username, connection);
+    public void add(int gameId, Session session) {
+        var connection = new Connection(gameId, session);
+        connections.put(gameId, connection);
     }
 
     public void remove(String username) {
@@ -23,8 +24,10 @@ public class ConnectionManager {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
-                if (!c.username.equals(excludeVisitorName)) {
-                    c.send(message.toString());
+                if (true) {
+                    Gson gson = new Gson();
+                    String jsonMessage = gson.toJson(message);
+                    c.send(jsonMessage);
                 }
             } else {
                 removeList.add(c);
@@ -33,7 +36,7 @@ public class ConnectionManager {
 
         // Clean up any connections that were left open.
         for (var c : removeList) {
-            connections.remove(c.username);
+            connections.remove(c.gameId);
         }
     }
 }

@@ -17,7 +17,7 @@ public class Repl implements NotificationHandler {
 
     public Repl(String serverUrl) throws Exception {
         gameplayClient = new GameplayClient(serverUrl);
-        postLoginClient = new PostLoginClient(serverUrl);
+        postLoginClient = new PostLoginClient(serverUrl, this);
         preLoginClient = new PreLoginClient(serverUrl);
     }
 
@@ -88,7 +88,7 @@ public class Repl implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage notification) {
-        System.out.println(RED + notification.);
+        System.out.println(SET_TEXT_COLOR_RED + notification);
         printPrompt();
     }
 }
