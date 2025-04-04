@@ -6,11 +6,10 @@ import dataaccess.GameDatabase;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import service.LoginService;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
-
-import java.io.IOException;
 
 
 @WebSocket
@@ -24,14 +23,13 @@ public class WebsocketHandler {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
             String username = getUsername(command.getAuthToken());
             switch (command.getCommandType()) {
-                case CONNECT -> connect(command.getGameID(), session);
+                case CONNECT -> connect(command.getGameID(), session, username);
                 case MAKE_MOVE -> makeMove(username, session);
                 case LEAVE -> leave(username, session);
                 case RESIGN -> resign(username, session);
             }
         }
         catch (Exception e){
-            e.printStackTrace();
         }
     }
     private String getUsername(String authToken) throws Exception {
@@ -48,12 +46,14 @@ public class WebsocketHandler {
     private void makeMove(String username, Session session) {
     }
 
-    public void connect(int gameId, Session session) throws Exception{
-        connections.add(gameId, session);
+    public void connect(int gameId, Session session, String username) throws Exception{
+        connections.add(gameId, session, username);
         GameDatabase gameDatabase = new GameDatabase();
         var game = gameDatabase.getGame(gameId).game();
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-        connections.broadcast("", notification);
+        var loadGameMessage = new LoadGameMessage(game);
+        var notificationMessage = new NotificationMessage(username + " has joined the game");
+        connections.broadcast(username, notificationMessage, gameId);
+        connections.sendToSelf(loadGameMessage, username);
     }
 
 

@@ -1,6 +1,7 @@
 package websocket.messages;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 
 import javax.management.remote.JMXServerErrorException;
 import java.util.Objects;
@@ -13,7 +14,6 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
-    private ChessGame game;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -21,9 +21,8 @@ public class ServerMessage {
         NOTIFICATION
     }
 
-    public ServerMessage(ServerMessageType type, ChessGame game) {
+    public ServerMessage(ServerMessageType type) {
         this.serverMessageType = type;
-        this.game = game;
     }
 
     public ServerMessageType getServerMessageType() {
@@ -45,5 +44,9 @@ public class ServerMessage {
     @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
+    }
+
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }
