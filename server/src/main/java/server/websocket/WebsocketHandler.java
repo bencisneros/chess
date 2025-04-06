@@ -11,6 +11,8 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+import java.util.Objects;
+
 
 @WebSocket
 public class WebsocketHandler {
@@ -49,9 +51,13 @@ public class WebsocketHandler {
     public void connect(int gameId, Session session, String username) throws Exception{
         connections.add(gameId, session, username);
         GameDatabase gameDatabase = new GameDatabase();
+        String color = "white";
+        if(Objects.equals(gameDatabase.getGame(gameId).blackUsername(), username)){
+            color = "black";
+        }
         var game = gameDatabase.getGame(gameId).game();
         LoadGameMessage loadGameMessage = new LoadGameMessage(game);
-        NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game");
+        NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game as " + color);
         connections.broadcast(username, notificationMessage, gameId);
         connections.sendToSelf(loadGameMessage, username);
     }

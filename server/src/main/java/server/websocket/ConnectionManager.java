@@ -48,7 +48,7 @@ public class ConnectionManager {
             Connection c = entry.getValue();
             if(Objects.equals(tempUsername, username)){
                 Gson gson = new Gson();
-                c.send(gson.toJson("loadgame" + message));
+                c.send(gson.toJson(message));
             }
         }
     }
