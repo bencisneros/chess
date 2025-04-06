@@ -2,10 +2,14 @@ package ui;
 
 import ui.client.*;
 import ui.client.websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import static ui.EscapeSequences.*;
 
+import java.awt.*;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -88,7 +92,18 @@ public class Repl implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage notification) {
-        System.out.println(SET_TEXT_COLOR_RED + notification);
+        if(notification instanceof NotificationMessage message) {
+            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+        }
+        else if(notification instanceof LoadGameMessage message){
+            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+        }
+        else if(notification instanceof ErrorMessage message){
+            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+        }
+        else{
+            System.out.println(SET_TEXT_COLOR_RED + "Received object of type: " + notification.getClass().getName());
+        }
         printPrompt();
     }
 }

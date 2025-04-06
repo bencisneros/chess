@@ -50,8 +50,8 @@ public class WebsocketHandler {
         connections.add(gameId, session, username);
         GameDatabase gameDatabase = new GameDatabase();
         var game = gameDatabase.getGame(gameId).game();
-        var loadGameMessage = new LoadGameMessage(game);
-        var notificationMessage = new NotificationMessage(username + " has joined the game");
+        LoadGameMessage loadGameMessage = new LoadGameMessage(game);
+        NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game");
         connections.broadcast(username, notificationMessage, gameId);
         connections.sendToSelf(loadGameMessage, username);
     }
