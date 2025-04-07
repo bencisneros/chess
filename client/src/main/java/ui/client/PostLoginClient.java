@@ -13,6 +13,7 @@ import java.util.Objects;
 import ui.ServerFacade.GameInfo;
 import ui.client.websocket.NotificationHandler;
 import ui.client.websocket.WebsocketFacade;
+import websocket.messages.ErrorMessage;
 
 public class PostLoginClient {
 
@@ -20,6 +21,7 @@ public class PostLoginClient {
     private final WebsocketFacade websocketFacade;
     private AuthData authData = null;
     private final NotificationHandler notificationHandler;
+    private String color;
 
     public PostLoginClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
         server = new ServerFacade(serverUrl);
@@ -29,6 +31,9 @@ public class PostLoginClient {
 
     public void setAuthData(AuthData authData) {
         this.authData = authData;
+    }
+    public String getColor(){
+        return color;
     }
 
     public String help() {
@@ -101,12 +106,13 @@ public class PostLoginClient {
         GameInfo[] list = server.listGames(authData);
 
         if(list.length < userId || userId <= 0){
-            throw new Exception(SET_TEXT_COLOR_RED + "enter valid index");
+            websocketFacade.joinGame(authData.username(), authData.authToken(), -1);
+            return "";
         }
 
         ChessGame game = list[userId - 1].gameData().game();
         int gameId = list[userId - 1].gameID();
-        String color = params[1];
+        color = params[1];
 
 
 
@@ -263,6 +269,9 @@ public class PostLoginClient {
         }
 
         var game = list[userId - 1].gameData().game();
+        int gameId = list[userId - 1].gameID();
+
+        websocketFacade.joinGame(authData.username(), authData.authToken(), gameId);
 
         return "observing game " + userId + "\n" +  printBoard(game, "white");
 

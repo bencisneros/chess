@@ -7,6 +7,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -51,15 +52,27 @@ public class WebsocketHandler {
     public void connect(int gameId, Session session, String username) throws Exception{
         connections.add(gameId, session, username);
         GameDatabase gameDatabase = new GameDatabase();
-        String color = "white";
-        if(Objects.equals(gameDatabase.getGame(gameId).blackUsername(), username)){
-            color = "black";
+        if (gameId == -1){
+            ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
+            connections.error(errorMessage, username);
         }
-        var game = gameDatabase.getGame(gameId).game();
-        LoadGameMessage loadGameMessage = new LoadGameMessage(game);
-        NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game as " + color);
-        connections.broadcast(username, notificationMessage, gameId);
-        connections.sendToSelf(loadGameMessage, username);
+        else {
+            var game = gameDatabase.getGame(gameId);
+            String color;
+            if(Objects.equals(game.blackUsername(), username)){
+                color = "black";
+            }
+            else if(Objects.equals(game.whiteUsername(), username)){
+                color = "white";
+            }
+            else{
+                color = "an observer";
+            }
+            LoadGameMessage loadGameMessage = new LoadGameMessage(game.game());
+            NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game as " + color);
+            connections.broadcast(username, notificationMessage, gameId);
+            connections.sendToSelf(loadGameMessage, username);
+        }
     }
 
 

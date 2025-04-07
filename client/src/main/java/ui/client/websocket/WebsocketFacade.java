@@ -2,6 +2,7 @@ package ui.client.websocket;
 
 import com.google.gson.Gson;
 import com.sun.nio.sctp.NotificationHandler;
+import server.websocket.ConnectionManager;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -16,6 +17,7 @@ import java.net.URISyntaxException;
 //need to extend Endpoint for websocket to work properly
 public class WebsocketFacade extends Endpoint {
 
+    private final ConnectionManager connections = new ConnectionManager();
     Session session;
     ui.client.websocket.NotificationHandler notificationHandler;
 

@@ -54,7 +54,9 @@ public class Repl implements NotificationHandler {
                 try{
                     result = postLoginClient.eval(line);
                     System.out.print(SET_TEXT_COLOR_YELLOW + result);
-                    if(Objects.equals(result.split(" ")[0], "joining") || Objects.equals(result.split(" ")[0], "observing")){
+                    if(Objects.equals(result.split(" ")[0], "joining") ||
+                       Objects.equals(result.split(" ")[0], "observing")){
+                        gameplayClient.setColor(postLoginClient.getColor());
                         state = 2;
                     }
                     else if (Objects.equals(result.split(" ")[0], "logged")){
@@ -69,13 +71,11 @@ public class Repl implements NotificationHandler {
             else if (state == 2){
                 try{
                     result = gameplayClient.eval(line);
-                    System.out.print(SET_TEXT_COLOR_LIGHT_GREY + result);
+                    System.out.print(SET_TEXT_COLOR_YELLOW + result);
                     if(Objects.equals(result.split(" ")[0], "leaving")){
                         state = 1;
                     }
-                    else if(Objects.equals(result.split(" ")[0], "logged")){
-                        state = 0;
-                    }
+
                 } catch (Throwable e) {
                     var msg = e.toString();
                     System.out.print(msg);
