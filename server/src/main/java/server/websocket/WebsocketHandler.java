@@ -52,7 +52,7 @@ public class WebsocketHandler {
     public void connect(int gameId, Session session, String username) throws Exception{
         connections.add(gameId, session, username);
         GameDatabase gameDatabase = new GameDatabase();
-        if (gameId == -1){
+        if (gameDatabase.getGame(gameId) == null){
             ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
             connections.error(errorMessage, username);
         }

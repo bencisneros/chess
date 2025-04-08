@@ -93,16 +93,13 @@ public class Repl implements NotificationHandler {
     @Override
     public void notify(ServerMessage notification) {
         if(notification instanceof NotificationMessage message) {
-            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+            System.out.println(SET_TEXT_COLOR_BLUE + message.getMessage());
         }
         else if(notification instanceof LoadGameMessage message){
-            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
+            System.out.println(SET_TEXT_COLOR_BLUE + message.getMessage());
         }
-        else if(notification instanceof ErrorMessage message){
-            System.out.println(SET_TEXT_COLOR_RED + message.getMessage());
-        }
-        else{
-            System.out.println(SET_TEXT_COLOR_RED + "Received object of type: " + notification.getClass().getName());
+        else if(notification instanceof ErrorMessage errorMessage){
+            System.out.println(SET_TEXT_COLOR_BLUE + errorMessage.getMessage());
         }
         printPrompt();
     }
