@@ -1,15 +1,17 @@
 package server;
 
+import com.google.gson.Gson;
 import dataaccess.AlreadyTaken;
 import dataaccess.DataAccessException;
 import dataaccess.NotEnoughInfo;
 import dataaccess.Unauthorized;
 import model.GameData;
 import model.UserData;
-import com.google.gson.Gson;
 import server.websocket.WebsocketHandler;
-import spark.*;
 import service.*;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
 
 import java.util.Map;
 

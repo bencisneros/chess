@@ -1,17 +1,18 @@
 package ui;
 
-import ui.client.*;
+import ui.client.GameplayClient;
+import ui.client.PostLoginClient;
+import ui.client.PreLoginClient;
 import ui.client.websocket.NotificationHandler;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
-import static ui.EscapeSequences.*;
-
-import java.awt.*;
 import java.util.Objects;
 import java.util.Scanner;
+
+import static ui.EscapeSequences.*;
 
 public class Repl implements NotificationHandler {
 
@@ -20,7 +21,7 @@ public class Repl implements NotificationHandler {
     private final PreLoginClient preLoginClient;
 
     public Repl(String serverUrl) throws Exception {
-        gameplayClient = new GameplayClient(serverUrl);
+        gameplayClient = new GameplayClient(serverUrl, this);
         postLoginClient = new PostLoginClient(serverUrl, this);
         preLoginClient = new PreLoginClient(serverUrl);
     }
@@ -56,8 +57,8 @@ public class Repl implements NotificationHandler {
                     System.out.print(SET_TEXT_COLOR_YELLOW + result);
                     if(Objects.equals(result.split(" ")[0], "joining") ||
                        Objects.equals(result.split(" ")[0], "observing")){
-                        gameplayClient.setColor(postLoginClient.getColor());
                         state = 2;
+                        gameplayClient.setGame(postLoginClient.getGame());
                     }
                     else if (Objects.equals(result.split(" ")[0], "logged")){
                         state = 0;

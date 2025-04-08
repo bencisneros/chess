@@ -1,19 +1,17 @@
 package ui.client;
-import chess.ChessBoard;
+
 import chess.ChessGame;
 import chess.ChessPiece;
 import model.AuthData;
-import model.GameData;
 import ui.ServerFacade;
-import static ui.EscapeSequences.*;
+import ui.ServerFacade.GameInfo;
+import ui.client.websocket.NotificationHandler;
+import ui.client.websocket.WebsocketFacade;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-import ui.ServerFacade.GameInfo;
-import ui.client.websocket.NotificationHandler;
-import ui.client.websocket.WebsocketFacade;
-import websocket.messages.ErrorMessage;
+import static ui.EscapeSequences.*;
 
 public class PostLoginClient {
 
@@ -22,6 +20,8 @@ public class PostLoginClient {
     private AuthData authData = null;
     private final NotificationHandler notificationHandler;
     private String color;
+    private ChessGame game;
+
 
     public PostLoginClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
         server = new ServerFacade(serverUrl);
@@ -32,8 +32,13 @@ public class PostLoginClient {
     public void setAuthData(AuthData authData) {
         this.authData = authData;
     }
+
     public String getColor(){
         return color;
+    }
+
+    public ChessGame getGame(){
+        return game;
     }
 
     public String help() {
@@ -110,9 +115,11 @@ public class PostLoginClient {
             return "";
         }
 
-        ChessGame game = list[userId - 1].gameData().game();
+        game = list[userId - 1].gameData().game();
         int gameId = list[userId - 1].gameID();
         color = params[1];
+        GameplayClient.color = color;
+        GameplayClient.gameId = gameId;
 
 
 
@@ -129,7 +136,7 @@ public class PostLoginClient {
         return "joining game " + userId + "\n" + printBoard(game, color);
     }
 
-    private String getPiece(ChessPiece[][] board, int i, int j) {
+    private static String getPiece(ChessPiece[][] board, int i, int j) {
         var piece = board[i][j];
         if(piece == null){
             return " ";
@@ -167,7 +174,7 @@ public class PostLoginClient {
         return "";
     }
 
-    private ChessPiece[][] flipBoard(ChessPiece[][] board) {
+    private static ChessPiece[][] flipBoard(ChessPiece[][] board) {
         int n = board.length - 1;
         for (int i = 0; i < (n + 1) / 2; i++) {
             for (int j = 0; j < n; j++) {
@@ -179,11 +186,11 @@ public class PostLoginClient {
         return board;
     }
 
-    private String printBoard(ChessGame game, String color) {
+    public static String printBoard(ChessGame game, String tempColor) {
 
         ChessPiece[][] gameBoard;
         String board = "";
-        if(Objects.equals(color, "white")) {
+        if(Objects.equals(tempColor, "white")) {
             gameBoard = game.board.board;
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
@@ -196,7 +203,7 @@ public class PostLoginClient {
         for(int i = 1; i < 9; i++){
             for(int j = 0; j < 10; j++){
                 if(j == 0 || j == 9){
-                    board += printBoarder(color, i);
+                    board += printBoarder(tempColor, i);
                     if (j == 9){
                         board += RESET_BG_COLOR + "\n";
                     }
@@ -211,7 +218,7 @@ public class PostLoginClient {
                 }
             }
         }
-        if(Objects.equals(color, "white")) {
+        if(Objects.equals(tempColor, "white")) {
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
         else{
@@ -221,9 +228,9 @@ public class PostLoginClient {
         return board;
     }
 
-    private String printBoarder(String color, int i){
+    private static String printBoarder(String tempColor, int i){
         String board = "";
-        if(Objects.equals(color, "white")){
+        if(Objects.equals(tempColor, "white")){
             switch (i){
                 case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
                 case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
