@@ -65,7 +65,8 @@ public class GameplayClient {
         return "";
     }
 
-    private String resign() {
+    private String resign() throws Exception{
+        websocketFacade.resign(authData.username(), authData.authToken(), gameId);
         return "";
     }
 

@@ -44,7 +44,7 @@ public class WebsocketHandler {
             case CONNECT -> connect(command, session, username);
             case MAKE_MOVE -> makeMove(makeMoveCommand, session, username);
             case LEAVE -> leave(username, session);
-            case RESIGN -> resign(username, session);
+            case RESIGN -> resign(command, session, username);
         }
     }
 
@@ -59,7 +59,31 @@ public class WebsocketHandler {
         return authDatabase.getAuth(authToken).username();
     }
 
-    private void resign(String username, Session session) {
+    private void resign(UserGameCommand command, Session session, String username) throws Exception{
+        GameDatabase gameDatabase = new GameDatabase();
+        int gameId = command.getGameID();
+        GameData gameData = gameDatabase.getGame(gameId);
+        ChessGame game = gameData.game();
+
+        if(!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())){
+            ErrorMessage errorMessage = new ErrorMessage("Error: observer cannot resign");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        if(game.getStatus()){
+            ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        game.setStatus(true);
+
+        gameDatabase.updateGameBoard(gameId, game);
+
+        NotificationMessage notificationMessage = new NotificationMessage(username + " resigned. Game over");
+        connections.broadcast("", notificationMessage, gameId);
+
     }
 
     private void leave(String username, Session session) {
@@ -142,7 +166,7 @@ public class WebsocketHandler {
         endSpot += String.valueOf(9 - endCol);
 
         NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
-        connections.broadcast("", notificationMessage, gameId);
+        connections.broadcast(username, notificationMessage, gameId);
 
         String blackUsername = gameData.blackUsername();
         LoadGameMessage loadBlackGame = new LoadGameMessage(game, "black");
