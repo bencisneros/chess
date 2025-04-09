@@ -5,11 +5,13 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import dataaccess.GameDatabase;
 import model.AuthData;
+import model.GameData;
 import ui.ServerFacade;
 import ui.client.websocket.NotificationHandler;
 import ui.client.websocket.WebsocketFacade;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class GameplayClient {
 
@@ -109,11 +111,23 @@ public class GameplayClient {
 
     private String redraw() throws Exception {
         ChessGame game = gameDatabase.getGame(gameId).game();
+        setColor();
         return PostLoginClient.printBoard(game, color);
     }
 
     public void setAuthData(AuthData authData) {
         this.authData = authData;
+    }
+
+    public void setColor() throws Exception {
+        String username = authData.username();
+        GameData gameData = gameDatabase.getGame(gameId);
+        if(Objects.equals(username, gameData.blackUsername())){
+            color = "black";
+        }
+        else{
+            color = "white";
+        }
     }
 
     private String leave() {
