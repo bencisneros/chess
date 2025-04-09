@@ -5,7 +5,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +24,25 @@ public class ConnectionManager {
     }
 
     public void broadcast(String excludeUsername, NotificationMessage message, int gameId) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (!Objects.equals(c.username, excludeUsername) && c.gameId == gameId) {
+                    Gson gson = new Gson();
+                    c.send(gson.toJson(message));
+                }
+            } else {
+                removeList.add(c);
+            }
+        }
+
+        // Clean up any connections that were left open.
+        for (var c : removeList) {
+            connections.remove(c.username);
+        }
+    }
+
+    public void sendLoadGame(String excludeUsername, LoadGameMessage message, int gameId) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {

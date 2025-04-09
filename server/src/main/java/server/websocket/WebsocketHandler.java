@@ -1,8 +1,11 @@
 package server.websocket;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDatabase;
 import dataaccess.GameDatabase;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -24,6 +27,11 @@ public class WebsocketHandler {
     public void onMessage(Session session, String message) throws Exception {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
+        MakeMoveCommand makeMoveCommand = new MakeMoveCommand("", -1, null);
+        if(command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE){
+            makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
+        }
+
         if (checkAuth(command.getAuthToken())){
             ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
             session.getRemote().sendString(new Gson().toJson(errorMessage));
@@ -34,7 +42,7 @@ public class WebsocketHandler {
 
         switch (command.getCommandType()) {
             case CONNECT -> connect(command, session, username);
-            case MAKE_MOVE -> makeMove((MakeMoveCommand) command, session, username);
+            case MAKE_MOVE -> makeMove(makeMoveCommand, session, username);
             case LEAVE -> leave(username, session);
             case RESIGN -> resign(username, session);
         }
@@ -58,6 +66,65 @@ public class WebsocketHandler {
     }
 
     private void makeMove(MakeMoveCommand makeMoveCommand, Session session, String username) throws Exception {
+        GameDatabase gameDatabase = new GameDatabase();
+
+        ChessMove move = makeMoveCommand.getMove();
+        int gameId = makeMoveCommand.getGameID();
+        GameData gameData = gameDatabase.getGame(gameId);
+        ChessGame game = gameData.game();
+
+        if(!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())){
+            ErrorMessage errorMessage = new ErrorMessage("Error: observer cannot make move");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        var validMoves = game.validMoves(move.startPosition);
+        if(!validMoves.contains(move)){
+            ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        game.makeMove(move);
+
+        String startSpot = "";
+        int startRow = move.startPosition.row;
+        int startCol = move.startPosition.col;
+
+        switch (startRow){
+            case 1 -> startSpot += "a";
+            case 2 -> startSpot += "b";
+            case 3 -> startSpot += "c";
+            case 4 -> startSpot += "d";
+            case 5 -> startSpot += "e";
+            case 6 -> startSpot += "f";
+            case 7 -> startSpot += "g";
+            case 8 -> startSpot += "h";
+        }
+        startSpot += String.valueOf(9 - startCol);
+
+        String endSpot = "";
+        int endRow = move.endPosition.row;
+        int endCol = move.endPosition.col;
+
+        switch (endRow){
+            case 1 -> endSpot += "a";
+            case 2 -> endSpot += "b";
+            case 3 -> endSpot += "c";
+            case 4 -> endSpot += "d";
+            case 5 -> endSpot += "e";
+            case 6 -> endSpot += "f";
+            case 7 -> endSpot += "g";
+            case 8 -> endSpot += "h";
+        }
+        endSpot += String.valueOf(9 - endCol);
+
+        NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
+        connections.broadcast(username, notificationMessage, gameId);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(game);
+        connections.sendLoadGame("", loadGameMessage, gameId);
 
     }
 
@@ -93,15 +160,12 @@ public class WebsocketHandler {
         else{
             color = "an observer";
         }
+
         LoadGameMessage loadGameMessage = new LoadGameMessage(game.game());
+        loadGameMessage.setColor(color);
+        connections.sendToSelf(loadGameMessage, username);
+
         NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game as " + color);
         connections.broadcast(username, notificationMessage, gameId);
-        connections.sendToSelf(loadGameMessage, username);
     }
-
-    public void sendUnauthorized(String authToken){
-
-    }
-
-
 }

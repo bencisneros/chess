@@ -134,7 +134,7 @@ public class PostLoginClient {
             throw new Exception(SET_TEXT_COLOR_RED + "pick valid color");
         }
 
-        return "joining game " + userId + "\n" + printBoard(game, color);
+        return "joining game " + userId + "\n";
     }
 
     private static String getPiece(ChessPiece[][] board, int i, int j) {
