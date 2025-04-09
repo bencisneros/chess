@@ -142,10 +142,14 @@ public class WebsocketHandler {
         endSpot += String.valueOf(9 - endCol);
 
         NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
-        connections.broadcast(username, notificationMessage, gameId);
+        connections.broadcast("", notificationMessage, gameId);
 
-        LoadGameMessage loadGameMessage = new LoadGameMessage(game);
-        connections.sendLoadGame("", loadGameMessage, gameId);
+        String blackUsername = gameData.blackUsername();
+        LoadGameMessage loadBlackGame = new LoadGameMessage(game, "black");
+        connections.sendToOneClient(loadBlackGame, blackUsername);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(game, "white");
+        connections.sendLoadGame(blackUsername, loadGameMessage, gameId);
 
     }
 
@@ -182,9 +186,14 @@ public class WebsocketHandler {
             color = "an observer";
         }
 
-        LoadGameMessage loadGameMessage = new LoadGameMessage(game.game());
-        loadGameMessage.setColor(color);
-        connections.sendToSelf(loadGameMessage, username);
+        if(color.equals("an observer")){
+            LoadGameMessage loadGameMessage = new LoadGameMessage(game.game(), "white");
+            connections.sendToOneClient(loadGameMessage, username);
+        }
+        else {
+            LoadGameMessage loadGameMessage = new LoadGameMessage(game.game(), color);
+            connections.sendToOneClient(loadGameMessage, username);
+        }
 
         NotificationMessage notificationMessage = new NotificationMessage(username + " has joined the game as " + color);
         connections.broadcast(username, notificationMessage, gameId);

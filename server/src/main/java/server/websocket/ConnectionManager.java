@@ -61,10 +61,11 @@ public class ConnectionManager {
         }
     }
 
-    public void sendToSelf(LoadGameMessage message, String username) throws IOException {
+    public void sendToOneClient(LoadGameMessage message, String username) throws IOException {
         for(ConcurrentHashMap.Entry<String, Connection> entry : connections.entrySet()){
             String tempUsername = entry.getKey();
             Connection c = entry.getValue();
+
             if(Objects.equals(tempUsername, username)){
                 Gson gson = new Gson();
                 c.send(gson.toJson(message));
