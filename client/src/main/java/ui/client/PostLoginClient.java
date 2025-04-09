@@ -21,7 +21,7 @@ public class PostLoginClient {
     private AuthData authData = null;
     private final NotificationHandler notificationHandler;
     private String color;
-    private ChessGame game;
+    private int gameId;
 
 
     public PostLoginClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
@@ -34,12 +34,8 @@ public class PostLoginClient {
         this.authData = authData;
     }
 
-    public String getColor(){
-        return color;
-    }
-
-    public ChessGame getGame(){
-        return game;
+    public int getGameId(){
+        return gameId;
     }
 
     public String help() {
@@ -116,11 +112,9 @@ public class PostLoginClient {
             return "";
         }
 
-        game = list[userId - 1].gameData().game();
-        int gameId = list[userId - 1].gameID();
+
+        gameId = list[userId - 1].gameID();
         color = params[1];
-        GameplayClient.color = color;
-        GameplayClient.gameId = gameId;
 
 
 

@@ -5,14 +5,12 @@ import com.google.gson.Gson;
 import model.GameData;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class GameDatabase implements GameDAO{
 
-    private static int gameId = 0;
+    private static int gameId = 1000;
 
     private final DatabaseManager databaseManager;
 
@@ -82,6 +80,12 @@ public class GameDatabase implements GameDAO{
         else{
             throw new DataAccessException("400 Error: bad request");
         }
+    }
+
+    public void updateGameBoard(int gameId, ChessGame game) throws Exception {
+        String statement = "UPDATE gameData SET game =? WHERE gameID =?";
+        String gsonGame = new Gson().toJson(game);
+        databaseManager.executeUpdate(statement, gsonGame, gameId);
     }
 
     public HashMap<Integer, GameData> getGameMap() throws Exception {

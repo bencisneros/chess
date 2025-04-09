@@ -19,6 +19,8 @@ public class Repl implements NotificationHandler {
     private final GameplayClient gameplayClient;
     private final PostLoginClient postLoginClient;
     private final PreLoginClient preLoginClient;
+    private int gameId;
+    private String color;
 
     public Repl(String serverUrl) throws Exception {
         gameplayClient = new GameplayClient(serverUrl, this);
@@ -58,7 +60,7 @@ public class Repl implements NotificationHandler {
                     if(Objects.equals(result.split(" ")[0], "joining") ||
                        Objects.equals(result.split(" ")[0], "observing")){
                         state = 2;
-                        gameplayClient.setGame(postLoginClient.getGame());
+                        gameplayClient.setGameId(postLoginClient.getGameId());
                     }
                     else if (Objects.equals(result.split(" ")[0], "logged")){
                         state = 0;

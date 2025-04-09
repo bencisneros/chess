@@ -15,11 +15,10 @@ public class GameplayClient {
 
     private AuthData authData = null;
     private ServerFacade server;
-    public static String color;
-    public static int gameId;
+    public String color;
+    public int gameId;
     private final WebsocketFacade websocketFacade;
-    private ChessGame game;
-    private GameDatabase gameDatabase = new GameDatabase();
+    private final GameDatabase gameDatabase = new GameDatabase();
 
 
     public GameplayClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
@@ -56,8 +55,8 @@ public class GameplayClient {
         }
     }
 
-    public void setGame(ChessGame game) throws Exception{
-        this.game = game;
+    public void setGameId(int id){
+        gameId = id;
     }
 
     private String highlightMoves(String[] params) {
@@ -108,7 +107,8 @@ public class GameplayClient {
         return "moved from " + params[0] + " to " + params[1];
     }
 
-    private String redraw() {
+    private String redraw() throws Exception {
+        ChessGame game = gameDatabase.getGame(gameId).game();
         return PostLoginClient.printBoard(game, color);
     }
 

@@ -72,6 +72,7 @@ public class WebsocketHandler {
         int gameId = makeMoveCommand.getGameID();
         GameData gameData = gameDatabase.getGame(gameId);
         ChessGame game = gameData.game();
+        ChessGame.TeamColor color = null;
 
         if(!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())){
             ErrorMessage errorMessage = new ErrorMessage("Error: observer cannot make move");
@@ -79,14 +80,34 @@ public class WebsocketHandler {
             return;
         }
 
+        if(Objects.equals(username, gameData.whiteUsername())){
+            color = ChessGame.TeamColor.WHITE;
+        }
+        if(Objects.equals(username, gameData.blackUsername())){
+            color = ChessGame.TeamColor.BLACK;
+        }
+        if(color != game.team){
+            ErrorMessage errorMessage = new ErrorMessage("Error: not your turn");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        if(game.getStatus()){
+            ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+
         var validMoves = game.validMoves(move.startPosition);
         if(!validMoves.contains(move)){
             ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
             connections.error(errorMessage, username);
             return;
         }
-
         game.makeMove(move);
+
+        gameDatabase.updateGameBoard(gameId, game);
 
         String startSpot = "";
         int startRow = move.startPosition.row;

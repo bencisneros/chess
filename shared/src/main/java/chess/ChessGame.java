@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ChessGame {
     public ChessBoard board;
     public TeamColor team;
+    private boolean isOver;
 
 
 
@@ -20,12 +21,21 @@ public class ChessGame {
         board = new ChessBoard();
         board.resetBoard();
         team = TeamColor.WHITE;
+        isOver = false;
     }
 
 
     public ChessGame (ChessGame tempGame){
         board = tempGame.getBoard();
         team = tempGame.getTeamTurn();
+    }
+
+    public boolean getStatus(){
+        return isOver;
+    }
+
+    public void setStatus(boolean status){
+        isOver = status;
     }
 
     @Override
@@ -175,6 +185,7 @@ public class ChessGame {
                 return false;
             }
         }
+        setStatus(true);
         return true;
     }
 
