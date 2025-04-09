@@ -22,6 +22,12 @@ public class ChessGame {
         team = TeamColor.WHITE;
     }
 
+
+    public ChessGame (ChessGame tempGame){
+        board = tempGame.getBoard();
+        team = tempGame.getTeamTurn();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

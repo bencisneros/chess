@@ -1,5 +1,6 @@
 package ui.client;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import model.AuthData;
@@ -174,33 +175,39 @@ public class PostLoginClient {
         return "";
     }
 
-    private static ChessPiece[][] flipBoard(ChessPiece[][] board) {
-        int n = board.length - 1;
+    private static ChessPiece[][] flipBoard(ChessBoard board) {
+        ChessPiece[][] tempBoard = new ChessBoard(board).board;
+        int n = tempBoard.length - 1;
         for (int i = 0; i < (n + 1) / 2; i++) {
             for (int j = 0; j < n; j++) {
-                ChessPiece temp = board[i][j];
-                board[i][j] = board[n - i][n - j];
-                board[n - i][n - j] = temp;
+                ChessPiece temp = tempBoard[i][j];
+                tempBoard[i][j] = tempBoard[n - i][n - j];
+                tempBoard[n - i][n - j] = temp;
             }
         }
-        return board;
+        return tempBoard;
     }
 
     public static String printBoard(ChessGame game, String tempColor) {
 
-        ChessPiece[][] gameBoard;
+        ChessGame tempGame = new ChessGame(game);
+
+
         String board = "";
+        var tempGameBoard = tempGame.board.board;
+
         if(Objects.equals(tempColor, "white")) {
-            gameBoard = game.board.board;
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
         else{
-            gameBoard = flipBoard(game.board.board);
+            tempGameBoard = flipBoard(tempGame.board);
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
         }
 
 
-        for(int i = 1; i < 9; i++){
+
+
+        for(int i = 8; i > 0; i--){
             for(int j = 0; j < 10; j++){
                 if(j == 0 || j == 9){
                     board += printBoarder(tempColor, i);
@@ -210,10 +217,10 @@ public class PostLoginClient {
                 }
                 else{
                     if((i + j) % 2 == 0){
-                        board += SET_BG_COLOR_WHITE + " " + getPiece(gameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_WHITE + " " + getPiece(tempGameBoard, i, j) + " ";
                     }
                     else{
-                        board += SET_BG_COLOR_BLACK + " " + getPiece(gameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_BLACK + " " + getPiece(tempGameBoard, i, j) + " ";
                     }
                 }
             }
@@ -230,7 +237,7 @@ public class PostLoginClient {
 
     private static String printBoarder(String tempColor, int i){
         String board = "";
-        if(Objects.equals(tempColor, "white")){
+        if(Objects.equals(tempColor, "black")){
             switch (i){
                 case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
                 case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
