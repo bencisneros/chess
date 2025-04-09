@@ -105,8 +105,7 @@ public class GameplayClient {
 
 
         websocketFacade.makeMove(authData.username(), authData.authToken(), gameId, move);
-
-        return "moved from " + params[0] + " to " + params[1];
+        return "";
     }
 
     private String redraw() throws Exception {

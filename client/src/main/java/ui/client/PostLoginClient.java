@@ -211,10 +211,10 @@ public class PostLoginClient {
                 }
                 else{
                     if((i + j) % 2 == 0){
-                        board += SET_BG_COLOR_WHITE + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_BLACK + " " + getPiece(tempGameBoard, i, j) + " ";
                     }
                     else{
-                        board += SET_BG_COLOR_BLACK + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_WHITE + " " + getPiece(tempGameBoard, i, j) + " ";
                     }
                 }
             }

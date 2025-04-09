@@ -99,7 +99,7 @@ public class Repl implements NotificationHandler {
             System.out.println(SET_TEXT_COLOR_BLUE + message.getMessage());
         }
         else if(notification instanceof LoadGameMessage message){
-            System.out.println(SET_TEXT_COLOR_BLUE + message.getMessage());
+            System.out.println("\n" + SET_TEXT_COLOR_BLUE + PostLoginClient.printBoard(message.getGame(), message.getColor()));
         }
         else if(notification instanceof ErrorMessage errorMessage){
             System.out.println(SET_TEXT_COLOR_BLUE + errorMessage.getMessage());
