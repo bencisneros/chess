@@ -1,6 +1,5 @@
 package server.websocket;
 
-import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.AuthDatabase;
 import dataaccess.GameDatabase;
@@ -24,33 +23,27 @@ public class WebsocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
-        String username = getUsername(command.getAuthToken());
 
-        if (checkAuth(command.getAuthToken(), username)){
+        if (checkAuth(command.getAuthToken())){
+            ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
             return;
         }
 
-        if(command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE){
-            MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
-            makeMove(username, session, makeMoveCommand.getMove());
-        }
+        String username = getUsername(command.getAuthToken());
 
         switch (command.getCommandType()) {
             case CONNECT -> connect(command, session, username);
+            case MAKE_MOVE -> makeMove((MakeMoveCommand) command, session, username);
             case LEAVE -> leave(username, session);
             case RESIGN -> resign(username, session);
         }
     }
 
 
-    private boolean checkAuth(String authToken, String username) throws Exception {
+    private boolean checkAuth(String authToken) throws Exception {
         AuthDatabase authDatabase = new AuthDatabase();
-        if(authDatabase.getAuth(authToken) == null){
-            ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
-            connections.error(errorMessage, username);
-            return true;
-        }
-        return false;
+        return authDatabase.getAuth(authToken) == null;
     }
 
     private String getUsername(String authToken) throws Exception {
@@ -64,21 +57,31 @@ public class WebsocketHandler {
     private void leave(String username, Session session) {
     }
 
-    private void makeMove(String username, Session session, ChessMove move) throws Exception {
+    private void makeMove(MakeMoveCommand makeMoveCommand, Session session, String username) throws Exception {
 
     }
 
     public void connect(UserGameCommand command, Session session, String username) throws Exception{
         int gameId = command.getGameID();
+        String authToken = command.getAuthToken();
         GameDatabase gameDatabase = new GameDatabase();
+        AuthDatabase authDatabase = new AuthDatabase();
 
         connections.add(gameId, session, username);
+
+        if (authDatabase.getAuth(authToken) == null){
+            ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
+            connections.error(errorMessage, username);
+            return;
+        }
+
 
         if (gameDatabase.getGame(gameId) == null){
             ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
             connections.error(errorMessage, username);
             return;
         }
+
         var game = gameDatabase.getGame(gameId);
         String color;
         if(Objects.equals(game.blackUsername(), username)){
