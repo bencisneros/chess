@@ -185,7 +185,6 @@ public class ChessGame {
                 return false;
             }
         }
-        setStatus(true);
         return true;
     }
 

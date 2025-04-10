@@ -126,6 +126,12 @@ public class WebsocketHandler {
             return;
         }
 
+        if(game.getStatus()){
+            ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
+            connections.error(errorMessage, username);
+            return;
+        }
+
         if(Objects.equals(username, gameData.whiteUsername())){
             color = ChessGame.TeamColor.WHITE;
         }
@@ -134,12 +140,6 @@ public class WebsocketHandler {
         }
         if(color != game.team){
             ErrorMessage errorMessage = new ErrorMessage("Error: not your turn");
-            connections.error(errorMessage, username);
-            return;
-        }
-
-        if(game.getStatus()){
-            ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
             connections.error(errorMessage, username);
             return;
         }
@@ -190,13 +190,52 @@ public class WebsocketHandler {
         NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
         connections.broadcast(username, notificationMessage, gameId);
 
+
         String blackUsername = gameData.blackUsername();
         LoadGameMessage loadBlackGame = new LoadGameMessage(game, "black");
         connections.sendToOneClient(loadBlackGame, blackUsername);
 
+        connections.broadcast("", checkGameStatus(gameId, color), gameId);
+
         LoadGameMessage loadGameMessage = new LoadGameMessage(game, "white");
         connections.sendLoadGame(blackUsername, loadGameMessage, gameId);
 
+    }
+
+    public NotificationMessage checkGameStatus(int gameId, ChessGame.TeamColor color) throws Exception {
+        GameDatabase gameDatabase = new GameDatabase();
+        GameData gameData = gameDatabase.getGame(gameId);
+
+        ChessGame game = gameData.game();
+        String messageUsername = null;
+
+        ChessGame.TeamColor checkColor;
+        if(color == ChessGame.TeamColor.WHITE){
+            checkColor = ChessGame.TeamColor.BLACK;
+            messageUsername = gameData.blackUsername();
+        }
+        else{
+            checkColor = ChessGame.TeamColor.WHITE;
+            messageUsername = gameData.whiteUsername();
+        }
+
+        if(game.isInCheckmate(checkColor)){
+            game.setStatus(true);
+            gameDatabase.updateGameBoard(gameId, game);
+            return new NotificationMessage(messageUsername + " is in checkmate");
+        }
+
+        if(game.isInStalemate(checkColor)){
+            game.setStatus(true);
+            gameDatabase.updateGameBoard(gameId, game);
+            return new NotificationMessage(messageUsername + " is in stalemate");
+        }
+
+        if(game.isInCheck(checkColor)){
+            return new NotificationMessage(messageUsername + " is in check");
+        }
+
+        return null;
     }
 
     public void connect(UserGameCommand command, Session session, String username) throws Exception{
