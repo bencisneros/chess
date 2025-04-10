@@ -235,57 +235,6 @@ public class GameplayClient {
         return "leaving game";
     }
 
-    private String getPiece(ChessPiece[][] board, int i, int j) {
-        var piece = board[i][j];
-        if(piece == null){
-            return " ";
-        }
-
-        String color;
-        if (piece.pieceColor == ChessGame.TeamColor.BLACK){
-            color = SET_TEXT_COLOR_BLUE;
-        }
-        else{
-            color = SET_TEXT_COLOR_RED;
-        }
-
-
-        switch (piece.type){
-            case ChessPiece.PieceType.PAWN -> {
-                return color + "P";
-            }
-            case ChessPiece.PieceType.ROOK -> {
-                return color + "R";
-            }
-            case ChessPiece.PieceType.KNIGHT -> {
-                return color + "N";
-            }
-            case ChessPiece.PieceType.BISHOP -> {
-                return color + "B";
-            }
-            case ChessPiece.PieceType.KING -> {
-                return color + "K";
-            }
-            case ChessPiece.PieceType.QUEEN -> {
-                return color + "Q";
-            }
-        }
-        return "";
-    }
-
-    private ChessPiece[][] flipBoard(ChessBoard board) {
-        ChessPiece[][] tempBoard = new ChessBoard(board).board;
-        int n = tempBoard.length - 1;
-        for (int i = 0; i < (n + 1) / 2; i++) {
-            for (int j = 0; j < n; j++) {
-                ChessPiece temp = tempBoard[i][j];
-                tempBoard[i][j] = tempBoard[n - i][n - j];
-                tempBoard[n - i][n - j] = temp;
-            }
-        }
-        return tempBoard;
-    }
-
     private ArrayList<ChessPosition> flipPositions(ArrayList<ChessPosition> positions){
         ArrayList<ChessPosition> tempArray = new ArrayList<>();
 
@@ -367,37 +316,6 @@ public class GameplayClient {
         else{
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
         }
-
-        return board;
-    }
-
-    private String printBoarder(String tempColor, int i){
-        String board = "";
-        if(Objects.equals(tempColor, "black")){
-            switch (i){
-                case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
-                case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
-                case 3: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 6 "; break;
-                case 4: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 5 "; break;
-                case 5: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 4 "; break;
-                case 6: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 3 "; break;
-                case 7: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 2 "; break;
-                case 8: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 1 "; break;
-            }
-        }
-        else{
-            switch (i){
-                case 1: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 1 "; break;
-                case 2: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 2 "; break;
-                case 3: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 3 "; break;
-                case 4: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 4 "; break;
-                case 5: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 5 "; break;
-                case 6: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 6 "; break;
-                case 7: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 7 "; break;
-                case 8: board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + " 8 "; break;
-            }
-        }
-
 
         return board;
     }

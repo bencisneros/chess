@@ -67,13 +67,13 @@ public class WebsocketHandler {
 
         if(!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())){
             ErrorMessage errorMessage = new ErrorMessage("Error: observer cannot resign");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
         if(game.getStatus()){
             ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
@@ -122,13 +122,13 @@ public class WebsocketHandler {
 
         if(!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())){
             ErrorMessage errorMessage = new ErrorMessage("Error: observer cannot make move");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
         if(game.getStatus()){
             ErrorMessage errorMessage = new ErrorMessage("Error: game is over");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
@@ -141,13 +141,13 @@ public class WebsocketHandler {
 
         if(game.getBoard().getPiece(move.startPosition) == null){
             ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
         if(game.getBoard().getPiece(move.startPosition).pieceColor != color){
             ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
@@ -155,7 +155,7 @@ public class WebsocketHandler {
 
         if(color != game.team){
             ErrorMessage errorMessage = new ErrorMessage("Error: not your turn");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
@@ -163,7 +163,7 @@ public class WebsocketHandler {
         var validMoves = game.validMoves(move.startPosition);
         if(!validMoves.contains(move)){
             ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
         game.makeMove(move);
@@ -265,14 +265,14 @@ public class WebsocketHandler {
 
         if (authDatabase.getAuth(authToken) == null){
             ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
 
         if (gameDatabase.getGame(gameId) == null){
             ErrorMessage errorMessage = new ErrorMessage("Error: enter valid index");
-            connections.error(errorMessage, username);
+            connections.sendToOneClient(errorMessage, username);
             return;
         }
 
