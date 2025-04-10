@@ -43,7 +43,7 @@ public class WebsocketHandler {
         switch (command.getCommandType()) {
             case CONNECT -> connect(command, session, username);
             case MAKE_MOVE -> makeMove(makeMoveCommand, session, username);
-            case LEAVE -> leave(username, session);
+            case LEAVE -> leave(command, session, username);
             case RESIGN -> resign(command, session, username);
         }
     }
@@ -86,7 +86,29 @@ public class WebsocketHandler {
 
     }
 
-    private void leave(String username, Session session) {
+    private void leave(UserGameCommand command, Session session, String username) throws Exception {
+        GameDatabase gameDatabase = new GameDatabase();
+        int gameId = command.getGameID();
+        GameData gameData = gameDatabase.getGame(gameId);
+
+        String color = null;
+
+        if(Objects.equals(gameData.blackUsername(), username)){
+            color = "black";
+        }
+        else if(Objects.equals(gameData.whiteUsername(), username)){
+            color = "white";
+        }
+
+        if(color != null){
+            gameDatabase.removePlayer(color, gameId);
+        }
+
+        connections.remove(username);
+
+        NotificationMessage notificationMessage = new NotificationMessage(username + " left the game");
+        connections.broadcast("", notificationMessage, gameId);
+
     }
 
     private void makeMove(MakeMoveCommand makeMoveCommand, Session session, String username) throws Exception {

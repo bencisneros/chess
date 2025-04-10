@@ -130,7 +130,8 @@ public class GameplayClient {
         }
     }
 
-    private String leave() {
+    private String leave() throws Exception {
+        websocketFacade.leave(authData.username(), authData.authToken(), gameId);
         return "leaving game";
     }
 }

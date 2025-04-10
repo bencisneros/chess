@@ -27,8 +27,8 @@ public class GameDatabase implements GameDAO{
     public GameData createGameData(String gameName) throws Exception {
         gameId++;
         var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
-        String whiteUsername = "";
-        String blackUsername = "";
+        String whiteUsername = null;
+        String blackUsername = null;
         ChessGame chessGame = new ChessGame();
         String gsonGame = new Gson().toJson(chessGame);
         databaseManager.executeUpdate(statement, gameId, whiteUsername, blackUsername, gameName, gsonGame);
@@ -64,14 +64,14 @@ public class GameDatabase implements GameDAO{
 
     public void updateGame(String playerColor, String username, GameData gameData) throws Exception {
         if(Objects.equals(playerColor, "WHITE")) {
-            if(!Objects.equals(gameData.whiteUsername(), "")){
+            if(!Objects.equals(gameData.whiteUsername(), null)){
                 throw new AlreadyTaken("403 Error: already taken");
             }
             String statement = "UPDATE gameData SET whiteUsername =? WHERE gameID =?";
             databaseManager.executeUpdate(statement, username, gameData.gameID());
         }
         else if(Objects.equals(playerColor, "BLACK")){
-            if(!Objects.equals(gameData.blackUsername(), "")){
+            if(!Objects.equals(gameData.blackUsername(), null)){
                 throw new AlreadyTaken("403 Error: already taken");
             }
             String statement = "UPDATE gameData SET blackUsername =? WHERE gameID =?";
@@ -104,5 +104,17 @@ public class GameDatabase implements GameDAO{
         }
 
         return map;
+    }
+
+    public void removePlayer(String color, int gameId) throws Exception {
+        String statement = "";
+        if(Objects.equals(color, "white")){
+            statement = "UPDATE gameData SET whiteUsername = NULL WHERE gameID =?";
+        }
+        else if(Objects.equals(color, "black")){
+            statement = "UPDATE gameData SET blackUsername = NULL WHERE gameID =?";
+        }
+
+        databaseManager.executeUpdate(statement, gameId);
     }
 }
