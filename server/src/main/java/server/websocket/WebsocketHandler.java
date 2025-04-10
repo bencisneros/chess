@@ -138,6 +138,21 @@ public class WebsocketHandler {
         if(Objects.equals(username, gameData.blackUsername())){
             color = ChessGame.TeamColor.BLACK;
         }
+
+        if(game.getBoard().getPiece(move.startPosition) == null){
+            ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+        if(game.getBoard().getPiece(move.startPosition).pieceColor != color){
+            ErrorMessage errorMessage = new ErrorMessage("Error: invalid move");
+            connections.error(errorMessage, username);
+            return;
+        }
+
+
+
         if(color != game.team){
             ErrorMessage errorMessage = new ErrorMessage("Error: not your turn");
             connections.error(errorMessage, username);

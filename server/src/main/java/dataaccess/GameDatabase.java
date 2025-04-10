@@ -27,7 +27,7 @@ public class GameDatabase implements GameDAO{
 
     public GameData createGameData(String gameName) throws Exception {
         Random random = new Random();
-        int gameId = random.nextInt(1000);
+        int gameId = random.nextInt(10000);
         var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
         String whiteUsername = null;
         String blackUsername = null;
