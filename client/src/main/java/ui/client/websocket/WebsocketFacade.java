@@ -2,13 +2,12 @@ package ui.client.websocket;
 
 import chess.ChessMove;
 import com.google.gson.Gson;
-import org.glassfish.tyrus.core.wsadl.model.Endpoint;
-import server.websocket.ConnectionManager;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
+
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.net.URISyntaxException;
 //need to extend Endpoint for websocket to work properly
 public class WebsocketFacade extends Endpoint {
 
-    private final ConnectionManager connections = new ConnectionManager();
     Session session;
     NotificationHandler notificationHandler;
 
