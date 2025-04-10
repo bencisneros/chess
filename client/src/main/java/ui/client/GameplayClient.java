@@ -1,7 +1,6 @@
 package ui.client;
 
 import chess.*;
-import dataaccess.GameDatabase;
 import model.AuthData;
 import model.GameData;
 import ui.ServerFacade;
@@ -20,7 +19,6 @@ public class GameplayClient {
     public String color;
     public int gameId;
     private final WebsocketFacade websocketFacade;
-    private final GameDatabase gameDatabase = new GameDatabase();
 
 
     public GameplayClient(String serverUrl, NotificationHandler notificationHandler) throws Exception {
@@ -200,7 +198,11 @@ public class GameplayClient {
     }
 
     private String redraw() throws Exception {
-        ChessGame game = gameDatabase.getGame(gameId).game();
+        var list = server.listGames(authData);
+        ChessGame game = null;
+        for(ServerFacade.GameInfo gameInfo : list){
+            game = gameInfo.gameData().game();
+        }
         setColor();
         return PostLoginClient.printBoard(game, color);
     }
@@ -211,7 +213,13 @@ public class GameplayClient {
 
     public void setColor() throws Exception {
         String username = authData.username();
-        GameData gameData = gameDatabase.getGame(gameId);
+        var list = server.listGames(authData);
+        ChessGame game = null;
+        GameData gameData = null;
+        for(ServerFacade.GameInfo gameInfo : list){
+            game = gameInfo.gameData().game();
+            gameData = gameInfo.gameData();
+        }
         if(Objects.equals(username, gameData.blackUsername())){
             color = "black";
         }
@@ -289,7 +297,11 @@ public class GameplayClient {
     }
 
     public String printValidMoves(ChessPosition position) throws Exception {
-        ChessGame game = gameDatabase.getGame(gameId).game();
+        var list = server.listGames(authData);
+        ChessGame game = null;
+        for(ServerFacade.GameInfo gameInfo : list){
+            game = gameInfo.gameData().game();
+        }
 
         if(game.getBoard().getPiece(position) == null){
             throw new Exception(SET_TEXT_COLOR_RED + "pick valid piece");

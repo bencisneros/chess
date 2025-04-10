@@ -6,7 +6,6 @@ import chess.ChessPiece;
 
 import java.util.Objects;
 
-import static websocket.EscapeSequences.*;
 
 public class LoadGameMessage extends ServerMessage{
     private final ChessGame game;
