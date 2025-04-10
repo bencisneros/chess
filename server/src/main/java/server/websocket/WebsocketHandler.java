@@ -210,7 +210,10 @@ public class WebsocketHandler {
         LoadGameMessage loadBlackGame = new LoadGameMessage(game, "black");
         connections.sendToOneClient(loadBlackGame, blackUsername);
 
-        connections.broadcast("", checkGameStatus(gameId, color), gameId);
+        NotificationMessage gameStatus = checkGameStatus(gameId, color);
+        if(gameStatus != null) {
+            connections.broadcast("", checkGameStatus(gameId, color), gameId);
+        }
 
         LoadGameMessage loadGameMessage = new LoadGameMessage(game, "white");
         connections.sendLoadGame(blackUsername, loadGameMessage, gameId);
