@@ -159,7 +159,7 @@ public class WebsocketHandler {
         int startRow = move.startPosition.row;
         int startCol = move.startPosition.col;
 
-        switch (startRow){
+        switch (startCol){
             case 1 -> startSpot += "a";
             case 2 -> startSpot += "b";
             case 3 -> startSpot += "c";
@@ -169,13 +169,13 @@ public class WebsocketHandler {
             case 7 -> startSpot += "g";
             case 8 -> startSpot += "h";
         }
-        startSpot += String.valueOf(9 - startCol);
+        startSpot += String.valueOf(startRow);
 
         String endSpot = "";
         int endRow = move.endPosition.row;
         int endCol = move.endPosition.col;
 
-        switch (endRow){
+        switch (endCol){
             case 1 -> endSpot += "a";
             case 2 -> endSpot += "b";
             case 3 -> endSpot += "c";
@@ -185,7 +185,7 @@ public class WebsocketHandler {
             case 7 -> endSpot += "g";
             case 8 -> endSpot += "h";
         }
-        endSpot += String.valueOf(9 - endCol);
+        endSpot += String.valueOf(endRow);
 
         NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
         connections.broadcast(username, notificationMessage, gameId);
