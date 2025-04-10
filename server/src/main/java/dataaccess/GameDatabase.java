@@ -7,10 +7,11 @@ import model.GameData;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Random;
 
 public class GameDatabase implements GameDAO{
 
-    private static int gameId = 1000;
+    private int gameId;
 
     private final DatabaseManager databaseManager;
 
@@ -25,7 +26,8 @@ public class GameDatabase implements GameDAO{
     }
 
     public GameData createGameData(String gameName) throws Exception {
-        gameId++;
+        Random random = new Random();
+        int gameId = random.nextInt(1000);
         var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
         String whiteUsername = null;
         String blackUsername = null;

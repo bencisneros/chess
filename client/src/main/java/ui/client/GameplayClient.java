@@ -31,7 +31,7 @@ public class GameplayClient {
     public String help() {
         return  "redraw\n" +
                 "leave\n" +
-                "move <x#> <x#>\n" +
+                "move <x#> <x#> <promotionPiece> (promotion piece can be left blank)\n" +
                 "resign\n" +
                 "highlightMoves <x#>\n" +
                 "quit\n" +
@@ -61,7 +61,41 @@ public class GameplayClient {
         gameId = id;
     }
 
-    private String highlightMoves(String[] params) {
+    private String highlightMoves(String[] params) throws Exception {
+        setColor();
+        if(params.length != 1){
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x>");
+        }
+
+        char letter1;
+        int startRow;
+        try {
+            letter1 = params[0].charAt(0);
+            startRow = Character.getNumericValue(params[0].charAt(1));
+        } catch (Exception e) {
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x>");
+        }
+
+        if(startRow  < 1 || startRow > 8){
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x>");
+        }
+
+        int startCol = 0;
+        switch (letter1){
+            case 'a' -> startCol = 1;
+            case 'b' -> startCol = 2;
+            case 'c' -> startCol = 3;
+            case 'd' -> startCol = 4;
+            case 'e' -> startCol = 5;
+            case 'f' -> startCol = 6;
+            case 'g' -> startCol = 7;
+            case 'h' -> startCol = 8;
+            default -> throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x>");
+        }
+
+        ChessPosition start = new ChessPosition(startRow, startCol);
+
+        return printValidMoves(start);
 
     }
 
@@ -75,8 +109,20 @@ public class GameplayClient {
             throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
         }
 
-        char letter1 = params[0].charAt(0);
-        int startRow = Character.getNumericValue(params[0].charAt(1));
+
+        char letter1;
+        int startRow;
+        try {
+            letter1 = params[0].charAt(0);
+            startRow = Character.getNumericValue(params[0].charAt(1));
+        } catch (Exception e) {
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
+        }
+
+        if(startRow  < 1 || startRow > 8){
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
+        }
+
         int startCol = 0;
         switch (letter1){
             case 'a' -> startCol = 1;
@@ -87,12 +133,25 @@ public class GameplayClient {
             case 'f' -> startCol = 6;
             case 'g' -> startCol = 7;
             case 'h' -> startCol = 8;
+            default -> throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
         }
 
         ChessPosition start = new ChessPosition(startRow, startCol);
 
+        char letter2;
+        int endRow;
+        try {
+            letter2 = params[1].charAt(0);
+            endRow = Character.getNumericValue(params[1].charAt(1));
+        } catch (Exception e) {
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
+        }
+
+        if(endRow < 1 || endRow > 8){
+            throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
+        }
+
         int endCol = 0;
-        char letter2 = params[1].charAt(0);
         switch (letter2){
             case 'a' -> endCol = 1;
             case 'b' -> endCol = 2;
@@ -102,12 +161,20 @@ public class GameplayClient {
             case 'f' -> endCol = 6;
             case 'g' -> endCol = 7;
             case 'h' -> endCol = 8;
+            default -> throw new Exception(SET_TEXT_COLOR_RED + "expected: <#x> <#x> <promotionPiece> (promotion piece can be left blank)");
         }
-        int endRow = Character.getNumericValue(params[1].charAt(1));
 
         ChessPosition end = new ChessPosition(endRow, endCol);
 
 
+        ChessMove move = getChessMove(params, start, end);
+
+
+        websocketFacade.makeMove(authData.username(), authData.authToken(), gameId, move);
+        return "";
+    }
+
+    private static ChessMove getChessMove(String[] params, ChessPosition start, ChessPosition end) throws Exception {
         String promotionPieceString;
         ChessPiece.PieceType pieceType = null;
 
@@ -116,15 +183,6 @@ public class GameplayClient {
         }
         else{
             promotionPieceString = null;
-        }
-
-        ChessGame.TeamColor colorType = null;
-
-        if (Objects.equals(color, "white")) {
-            colorType = ChessGame.TeamColor.WHITE;
-        }
-        else if (Objects.equals(color, "black")){
-            colorType = ChessGame.TeamColor.BLACK;
         }
 
 
@@ -138,10 +196,7 @@ public class GameplayClient {
         }
 
         ChessMove move = new ChessMove(start, end, pieceType);
-
-
-        websocketFacade.makeMove(authData.username(), authData.authToken(), gameId, move);
-        return "";
+        return move;
     }
 
     private String redraw() throws Exception {
@@ -170,7 +225,7 @@ public class GameplayClient {
         return "leaving game";
     }
 
-    private static String getPiece(ChessPiece[][] board, int i, int j) {
+    private String getPiece(ChessPiece[][] board, int i, int j) {
         var piece = board[i][j];
         if(piece == null){
             return " ";
@@ -208,7 +263,7 @@ public class GameplayClient {
         return "";
     }
 
-    private static ChessPiece[][] flipBoard(ChessBoard board) {
+    private ChessPiece[][] flipBoard(ChessBoard board) {
         ChessPiece[][] tempBoard = new ChessBoard(board).board;
         int n = tempBoard.length - 1;
         for (int i = 0; i < (n + 1) / 2; i++) {
@@ -221,22 +276,44 @@ public class GameplayClient {
         return tempBoard;
     }
 
-    public static String printValidMoves(ChessGame game, String tempColor) {
+    private ArrayList<ChessPosition> flipPositions(ArrayList<ChessPosition> positions){
+        ArrayList<ChessPosition> tempArray = new ArrayList<>();
 
-        ChessGame tempGame = new ChessGame(game);
-        //var validMoves = game.validMoves();
+        for(ChessPosition position : positions){
+            int tempRow = 9 - position.row;
+            int tempCol = 9 - position.col;
+            tempArray.add(new ChessPosition(tempRow, tempCol));
+        }
 
-        //ArrayList<ChessPosition> valid en
+        return tempArray;
+    }
+
+    public String printValidMoves(ChessPosition position) throws Exception {
+        ChessGame game = gameDatabase.getGame(gameId).game();
+
+        if(game.getBoard().getPiece(position) == null){
+            throw new Exception(SET_TEXT_COLOR_RED + "pick valid piece");
+        }
+
+        var validMoves = game.validMoves(position);
+
+        ArrayList<ChessPosition> validEnds = new ArrayList<>();
+
+        for(ChessMove moves : validMoves){
+            validEnds.add(moves.endPosition);
+        }
 
 
         String board = "";
-        var tempGameBoard = tempGame.board.board;
+        var tempGameBoard = game.board.board;
 
-        if(Objects.equals(tempColor, "white")) {
+
+        if(Objects.equals(color, "white")) {
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
         else{
-            tempGameBoard = flipBoard(tempGame.board);
+            tempGameBoard = flipBoard(game.board);
+            validEnds = flipPositions(validEnds);
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
         }
 
@@ -245,15 +322,22 @@ public class GameplayClient {
 
         for(int i = 8; i > 0; i--){
             for(int j = 0; j < 10; j++){
+                var currentPosition = new ChessPosition(i,j);
                 if(j == 0 || j == 9){
-                    board += printBoarder(tempColor, i);
+                    board += printBoarder(color, i);
                     if (j == 9){
                         board += RESET_BG_COLOR + "\n";
                     }
                 }
                 else{
-                    if((i + j) % 2 == 0){
+                    if((i + j) % 2 == 0 && validEnds.contains(currentPosition)){
+                        board += SET_BG_COLOR_DARK_GREEN + " " + getPiece(tempGameBoard, i, j) + " ";
+                    }
+                    else if((i + j) % 2 == 0){
                         board += SET_BG_COLOR_BLACK + " " + getPiece(tempGameBoard, i, j) + " ";
+                    }
+                    else if((i + j) % 2 == 1 && validEnds.contains(currentPosition)){
+                        board += SET_BG_COLOR_GREEN + " " + getPiece(tempGameBoard, i, j) + " ";
                     }
                     else{
                         board += SET_BG_COLOR_WHITE + " " + getPiece(tempGameBoard, i, j) + " ";
@@ -261,7 +345,7 @@ public class GameplayClient {
                 }
             }
         }
-        if(Objects.equals(tempColor, "white")) {
+        if(Objects.equals(color, "white")) {
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
         else{
@@ -271,7 +355,7 @@ public class GameplayClient {
         return board;
     }
 
-    private static String printBoarder(String tempColor, int i){
+    private String printBoarder(String tempColor, int i){
         String board = "";
         if(Objects.equals(tempColor, "black")){
             switch (i){
