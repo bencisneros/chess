@@ -3,7 +3,7 @@ package ui.client.websocket;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import org.glassfish.tyrus.core.wsadl.model.Endpoint;
-import websocket.ConnectionManager;
+import server.websocket.ConnectionManager;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;

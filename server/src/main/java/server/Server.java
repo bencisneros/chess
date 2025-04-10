@@ -11,7 +11,7 @@ import service.*;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
-import websocket.WebsocketHandler;
+import server.websocket.WebsocketHandler;
 
 import java.util.Map;
 
