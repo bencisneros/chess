@@ -201,7 +201,9 @@ public class GameplayClient {
         var list = server.listGames(authData);
         ChessGame game = null;
         for(ServerFacade.GameInfo gameInfo : list){
-            game = gameInfo.gameData().game();
+            if(gameInfo.gameID() == gameId){
+                game = gameInfo.gameData().game();
+            }
         }
         setColor();
         return PostLoginClient.printBoard(game, color);
@@ -214,11 +216,11 @@ public class GameplayClient {
     public void setColor() throws Exception {
         String username = authData.username();
         var list = server.listGames(authData);
-        ChessGame game = null;
         GameData gameData = null;
         for(ServerFacade.GameInfo gameInfo : list){
-            game = gameInfo.gameData().game();
-            gameData = gameInfo.gameData();
+            if(gameInfo.gameID() == gameId) {
+                gameData = gameInfo.gameData();
+            }
         }
         if(Objects.equals(username, gameData.blackUsername())){
             color = "black";
@@ -300,7 +302,9 @@ public class GameplayClient {
         var list = server.listGames(authData);
         ChessGame game = null;
         for(ServerFacade.GameInfo gameInfo : list){
-            game = gameInfo.gameData().game();
+            if(gameInfo.gameID() == gameId){
+                game = gameInfo.gameData().game();
+            }
         }
 
         if(game.getBoard().getPiece(position) == null){
@@ -324,7 +328,7 @@ public class GameplayClient {
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n";
         }
         else{
-            tempGameBoard = flipBoard(game.board);
+            tempGameBoard = PostLoginClient.flipBoard(game.board);
             validEnds = flipPositions(validEnds);
             board += SET_BG_COLOR_DARK_GREY + RESET_TEXT_COLOR + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n";
         }
@@ -336,23 +340,23 @@ public class GameplayClient {
             for(int j = 0; j < 10; j++){
                 var currentPosition = new ChessPosition(i,j);
                 if(j == 0 || j == 9){
-                    board += printBoarder(color, i);
+                    board += PostLoginClient.printBoarder(color, i);
                     if (j == 9){
                         board += RESET_BG_COLOR + "\n";
                     }
                 }
                 else{
                     if((i + j) % 2 == 0 && validEnds.contains(currentPosition)){
-                        board += SET_BG_COLOR_DARK_GREEN + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_DARK_GREEN + " " + PostLoginClient.getPiece(tempGameBoard, i, j) + " ";
                     }
                     else if((i + j) % 2 == 0){
-                        board += SET_BG_COLOR_BLACK + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_BLACK + " " + PostLoginClient.getPiece(tempGameBoard, i, j) + " ";
                     }
                     else if((i + j) % 2 == 1 && validEnds.contains(currentPosition)){
-                        board += SET_BG_COLOR_GREEN + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_GREEN + " " + PostLoginClient.getPiece(tempGameBoard, i, j) + " ";
                     }
                     else{
-                        board += SET_BG_COLOR_WHITE + " " + getPiece(tempGameBoard, i, j) + " ";
+                        board += SET_BG_COLOR_WHITE + " " + PostLoginClient.getPiece(tempGameBoard, i, j) + " ";
                     }
                 }
             }

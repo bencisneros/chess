@@ -174,32 +174,15 @@ public class WebsocketHandler {
         int startRow = move.startPosition.row;
         int startCol = move.startPosition.col;
 
-        switch (startCol){
-            case 1 -> startSpot += "a";
-            case 2 -> startSpot += "b";
-            case 3 -> startSpot += "c";
-            case 4 -> startSpot += "d";
-            case 5 -> startSpot += "e";
-            case 6 -> startSpot += "f";
-            case 7 -> startSpot += "g";
-            case 8 -> startSpot += "h";
-        }
+        startSpot += intToChar(startCol);
         startSpot += String.valueOf(startRow);
 
         String endSpot = "";
         int endRow = move.endPosition.row;
         int endCol = move.endPosition.col;
 
-        switch (endCol){
-            case 1 -> endSpot += "a";
-            case 2 -> endSpot += "b";
-            case 3 -> endSpot += "c";
-            case 4 -> endSpot += "d";
-            case 5 -> endSpot += "e";
-            case 6 -> endSpot += "f";
-            case 7 -> endSpot += "g";
-            case 8 -> endSpot += "h";
-        }
+        endSpot += intToChar(endCol);
+
         endSpot += String.valueOf(endRow);
 
         NotificationMessage notificationMessage = new NotificationMessage(username + " moved from " + startSpot + " to " + endSpot);
@@ -216,8 +199,23 @@ public class WebsocketHandler {
         }
 
         LoadGameMessage loadGameMessage = new LoadGameMessage(game, "white");
-        connections.sendLoadGame(blackUsername, loadGameMessage, gameId);
+        connections.broadcast(blackUsername, loadGameMessage, gameId);
 
+    }
+
+    private String intToChar(int i){
+        String letter = "";
+        switch (i){
+            case 1 -> letter += "a";
+            case 2 -> letter += "b";
+            case 3 -> letter += "c";
+            case 4 -> letter += "d";
+            case 5 -> letter += "e";
+            case 6 -> letter += "f";
+            case 7 -> letter += "g";
+            case 8 -> letter += "h";
+        }
+        return letter;
     }
 
     public NotificationMessage checkGameStatus(int gameId, ChessGame.TeamColor color) throws Exception {

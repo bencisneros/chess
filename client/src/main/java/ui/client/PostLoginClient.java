@@ -131,7 +131,7 @@ public class PostLoginClient {
         return "joining game " + userId + "\n";
     }
 
-    private static String getPiece(ChessPiece[][] board, int i, int j) {
+    public static String getPiece(ChessPiece[][] board, int i, int j) {
         var piece = board[i][j];
         if(piece == null){
             return " ";
@@ -169,7 +169,7 @@ public class PostLoginClient {
         return "";
     }
 
-    private static ChessPiece[][] flipBoard(ChessBoard board) {
+    public static ChessPiece[][] flipBoard(ChessBoard board) {
         ChessPiece[][] tempBoard = new ChessBoard(board).board;
         int n = tempBoard.length - 1;
         for (int i = 0; i < (n + 1) / 2; i++) {
@@ -229,7 +229,7 @@ public class PostLoginClient {
         return board;
     }
 
-    private static String printBoarder(String tempColor, int i){
+    public static String printBoarder(String tempColor, int i){
         String board = "";
         if(Objects.equals(tempColor, "black")){
             switch (i){
