@@ -2,7 +2,8 @@ package ui.client.websocket;
 
 import chess.ChessMove;
 import com.google.gson.Gson;
-import server.websocket.ConnectionManager;
+import org.glassfish.tyrus.core.wsadl.model.Endpoint;
+import websocket.ConnectionManager;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -19,10 +20,10 @@ public class WebsocketFacade extends Endpoint {
 
     private final ConnectionManager connections = new ConnectionManager();
     Session session;
-    ui.client.websocket.NotificationHandler notificationHandler;
+    NotificationHandler notificationHandler;
 
 
-    public WebsocketFacade(String url, ui.client.websocket.NotificationHandler notificationHandler) throws Exception {
+    public WebsocketFacade(String url, NotificationHandler notificationHandler) throws Exception {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");

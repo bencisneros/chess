@@ -7,11 +7,11 @@ import dataaccess.NotEnoughInfo;
 import dataaccess.Unauthorized;
 import model.GameData;
 import model.UserData;
-import server.websocket.WebsocketHandler;
 import service.*;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
+import websocket.WebsocketHandler;
 
 import java.util.Map;
 

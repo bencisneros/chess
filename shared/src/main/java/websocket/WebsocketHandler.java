@@ -1,4 +1,4 @@
-package server.websocket;
+package websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
@@ -254,6 +254,7 @@ public class WebsocketHandler {
     }
 
     public void connect(UserGameCommand command, Session session, String username) throws Exception{
+
         int gameId = command.getGameID();
         String authToken = command.getAuthToken();
         GameDatabase gameDatabase = new GameDatabase();
